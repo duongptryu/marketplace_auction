@@ -344,6 +344,7 @@ function MyHeaderNavbar({
       console.log(e)
     }
   }
+
   return (
     <Container sx={sticky ? { position: "sticky", top: 0, zIndex: 10 } : null}>
       <MKBox

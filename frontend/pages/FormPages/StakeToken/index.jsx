@@ -48,7 +48,7 @@ function StakeToken() {
   useEffect(async () => {
     try {
       const dataRes = await staking.GetStakingPackage()
-      console.log(dataRes)
+      console.log(dataRes, "packages")
       setData(convertData(dataRes))
     } catch (e) {
       console.log(e)

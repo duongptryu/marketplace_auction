@@ -79,6 +79,7 @@ export default function MKRadioGroup(props) {
       >
         {items.map((item) => (
           <FormControlLabel
+            sx={{ display: "flex" }}
             key={item.id}
             value={item.optional ? input : item.id}
             control={

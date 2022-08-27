@@ -45,7 +45,7 @@ const routesHeader = {
     },
     {
       type: "external",
-      route: "/",
+      route: "/connect",
       component: <></>,
       label: "Connect to wallet",
       color: "info",
