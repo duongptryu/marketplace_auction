@@ -98,7 +98,8 @@ function MintPage() {
     <BaseLayout
       breadcrumb={[
         { label: "Home", route: "/presentation" },
-        { label: "Product detail" },
+        { label: "My Collections", route: "/collection" },
+        { label: "Mint Product" },
       ]}
       title=""
     >

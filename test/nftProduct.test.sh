@@ -7,17 +7,16 @@ identity account1 "../config/account1.pem";
 "- Should revert if token not exist";
 let resp = call marketplaceCanister.AddOrder(
     account1,
-    record {
-        stepBid=1000;
-        startPrice=20000;
-        tokenId=opt 1; 
-        auctionTime=8640000000000; 
-        tokenPayment=dip20Canister; 
-        typeAuction=variant {AuctionNFT}; 
-        metadataAuction=null;
-        title="Bộ sưu tập của Dương";
-        description="Đây là những ảnh mà Dương đã chụp trong thời gian du lịch"
-    }
+    "NFT",
+    "day la title",
+    1,
+    "Đây là những ảnh mà Dương đã chụp trong thời gian du lịch",
+    1000,
+    20000,
+    dip20Canister,
+    8640000000000,
+    "",
+    ""
 );
 assert resp == variant { Err = variant { NotOwnerOfToken } };
 
@@ -35,18 +34,17 @@ assert resp == variant { Ok = 2 : nat };
 let resp = call dip721Canister.mint(account2, record {url="https://picsum.photos/600/400"; name="Duong3"; description="Day la anh cua Duong3"});
 assert resp == variant { Ok = 3 : nat };
 let resp = call marketplaceCanister.AddOrder(
-    account2, 
-    record {
-        stepBid=1000;
-        startPrice=20000;
-        tokenId=opt 3; 
-        auctionTime=0; 
-        tokenPayment=dip20Canister; 
-        typeAuction=variant {AuctionNFT}; 
-        metadataAuction=null;
-        title="title";
-        description="description"
-    }
+    account2,
+    "NFT",
+    "Day la title 2",
+    3,
+    "description",
+    1000,
+    20000,
+    dip20Canister,
+    0,
+    "",
+    ""
 );
 assert resp == variant { Ok = 1 : nat };
 " - Should revert if not seller";
@@ -56,17 +54,16 @@ call dip721Canister.approve(1, account3);
 identity account3 "../config/account3.pem";
 let resp = call marketplaceCanister.AddOrder(
     account3,
-    record {
-        stepBid=1000;
-        startPrice=10000;
-        tokenId=opt 1; 
-        auctionTime=86400; 
-        tokenPayment=dip20Canister; 
-        typeAuction=variant {AuctionNFT}; 
-        metadataAuction=null;
-        title="title";
-        description="description"
-    }
+    "NFT",
+    "Day la title 3",
+    1,
+    "description 1",
+    1000,
+    10000,
+    dip20Canister,
+    86400,
+    "",
+    ""
 );
 assert resp == variant { Err = variant { NotSeller } };
 
@@ -74,17 +71,16 @@ assert resp == variant { Err = variant { NotSeller } };
 identity account1 "../config/account1.pem";
 let resp = call marketplaceCanister.AddOrder(
     account1,
-    record {
-        stepBid=1000;
-        startPrice=10000;
-        tokenId=opt 2; 
-        auctionTime=86400; 
-        tokenPayment=dip20Canister; 
-        typeAuction=variant {AuctionNFT}; 
-        metadataAuction=null;
-        title="title";
-        description="description"
-    }
+     "NFT",
+    "Day la title 4",
+    2,
+    "description 4",
+    1000,
+    10000,
+    dip20Canister,
+    86400,
+    "",
+    ""
 );
 assert resp == variant { Err = variant { NotOwnerOrApprovedForToken } };
 
@@ -92,17 +88,16 @@ assert resp == variant { Err = variant { NotOwnerOrApprovedForToken } };
 identity account1 "../config/account1.pem";
 let resp = call marketplaceCanister.AddOrder(
     account1,
-    record {
-        stepBid=1000;
-        startPrice=20000;
-        tokenId=opt 1; 
-        auctionTime=86400000000000; 
-        tokenPayment=dip20Canister; 
-        typeAuction=variant {AuctionNFT}; 
-        metadataAuction=null;
-        title="title";
-        description="description"
-    }
+     "NFT",
+    "Day la title 5",
+    1,
+    "description 5",
+    1000,
+    20000,
+    dip20Canister,
+    86400000000000,
+    "",
+    ""
 );
 assert resp == variant { Ok = 2 : nat };
 
@@ -114,17 +109,16 @@ call dip721Canister.approve(2, account1);
 identity account1 "../config/account1.pem";
 let resp = call marketplaceCanister.AddOrder(
     account1,
-    record {
-        stepBid=1000;
-        startPrice=20000;
-        tokenId=opt 2; 
-        auctionTime=60000000000; 
-        tokenPayment=dip20Canister; 
-        typeAuction=variant {AuctionNFT}; 
-        metadataAuction=null;
-        title="title";
-        description="description"
-    }
+    "NFT",
+    "Day la title 5",
+    2,
+    "description 5",
+    1000,
+    20000,
+    dip20Canister,
+    60000000000,
+    "",
+    ""
 );
 assert resp == variant { Ok = 3 : nat };
 let resp = call dip721Canister.ownerOf(2);
@@ -195,17 +189,16 @@ let resp = call dip721Canister.mint(account1, record {url="http://groupbar.me/4"
 assert resp == variant { Ok = 4 : nat };
 let resp = call marketplaceCanister.AddOrder(
     account1,
-    record {
-        stepBid=1000;
-        startPrice=20000;
-        tokenId=opt 4; 
-        auctionTime=50000000000; 
-        tokenPayment=dip20Canister; 
-        typeAuction=variant {AuctionNFT}; 
-        metadataAuction=null;
-        title="title";
-        description="description"
-    }
+    "NFT",
+    "Day la title 10",
+    4,
+    "description 10",
+    1000,
+    20000,
+    dip20Canister,
+    60000000000,
+    "",
+    ""
 );
 assert resp == variant { Ok = 4 : nat };
 

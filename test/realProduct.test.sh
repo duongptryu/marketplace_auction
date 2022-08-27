@@ -4,66 +4,54 @@ load "../env.sh";
 identity account1 "../config/account1.pem";
 "Daction real NFT";
 "- Should create product correctly";
-let resp = call marketplaceCanister.AddOrder(account1,
-    record {
-        title="test product"; 
-        tokenId=opt 1; 
-        auctionTime=60000000000; 
-        description="test"; 
-        picture=opt "https://picsum.photos/600/400"; 
-        stepBid=1000; 
-        tokenPayment=dip20Canister;
-        typeAuction=variant {AuctionRealProduct}; 
-        metadataAuction=opt record {
-            file=vec {"asdasdasdasd"}; 
-            description="asdasdasdasd";
-        }; 
-        startPrice=2000;
-    }
+let resp = call marketplaceCanister.AddOrder(
+    account1,
+    "REAL_PRODUCT",
+    "Day la real product 1",
+    1,
+    "description 1",
+    1000,
+    20000,
+    dip20Canister,
+    60000000000,
+    "Nhieu link anh",
+    "https://picsum.photos/600/400"
 );
 resp;
 assert resp != variant { Err };
 
 identity account2 "../config/account2.pem";
 "- Should create product correctly 2";
-let resp = call marketplaceCanister.AddOrder(account2,
-    record {
-        title="test product 2"; 
-        tokenId=opt 1; 
-        auctionTime=60000000000; 
-        description="test 2"; 
-        picture=opt "https://picsum.photos/600/400"; 
-        stepBid=1000; 
-        tokenPayment=dip20Canister;
-        typeAuction=variant {AuctionRealProduct}; 
-        metadataAuction=opt record {
-            file=vec {"asdasdasdasd"}; 
-            description="asdasdasdasd";
-        }; 
-        startPrice=2000;
-    }
+let resp = call marketplaceCanister.AddOrder(
+    account2,
+    "REAL_PRODUCT",
+    "Day la real product 2",
+    1,
+    "description 2",
+    1000,
+    20000,
+    dip20Canister,
+    60000000000,
+    "Nhieu link anh",
+    "https://picsum.photos/600/400",
 );
 resp;
 assert resp != variant { Err };
 
 "- Should create product correctly 2";
 marketplaceCanister;
-let resp = call marketplaceCanister.AddOrder(account2,
-    record {
-        title="test product 3"; 
-        tokenId=opt 1; 
-        auctionTime=60000000000; 
-        description="test 3"; 
-        picture=opt "https://picsum.photos/600/400"; 
-        stepBid=1000; 
-        tokenPayment=dip20Canister;
-        typeAuction=variant {AuctionRealProduct}; 
-        metadataAuction=opt record {
-            file=vec {"asdasdasdasd"}; 
-            description="asdasdasdasd";
-        }; 
-        startPrice=2000;
-    }
+let resp = call marketplaceCanister.AddOrder(
+    account2,
+    "REAL_PRODUCT",
+    "Day la real product 3",
+    1,
+    "description 3",
+    1000,
+    20000,
+    dip20Canister,
+    60000000000,
+    "Nhieu link anh",
+    "https://picsum.photos/600/400"
 );
 resp;
 assert resp != variant { Err };

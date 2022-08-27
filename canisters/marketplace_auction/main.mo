@@ -29,7 +29,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 	private stable var auctionPendingIdCount: Nat = 0;
     private stable var bitIdCount: Nat = 0;
     private stable var fee = 10;
-	private stable var timePending = 86000000000;
+	private stable var timePending = 8600000000000;
 
     private stable var supportedPaymentStore: [(Principal, Types.SupportPaymentResp)] = [];
     private stable var auctionStore: [(Nat, Types.Auction)] = [];
@@ -103,9 +103,33 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 
 	
 	//ORDER
-		public shared(msg) func AddOrder(caller: Principal, data: Types.AuctionCreate): async Types.AddAuctionResult {
+		public shared(msg) func AddOrder(
+			caller: Principal, 
+			typeAuction: Text, 
+			title: Text, 
+			tokenId: Nat64, 
+			description: Text, 
+			stepBid: Nat64, 
+			startPrice: Nat64, 
+			tokenPayment: Principal, 
+			auctionTime: Nat64, 
+			metadataAuction: Text, 
+			picture: Text
+		): async Types.AddAuctionResult {
 		if (not _isSeller(caller)) {
 			return #Err(#NotSeller);
+		};
+
+		let data: Types.AuctionCreate = {
+			title= title;
+			description=description;
+			stepBid= Nat64.toNat(stepBid);
+			startPrice=Nat64.toNat(startPrice);
+			tokenPayment=tokenPayment;
+			auctionTime=Nat64.toNat(auctionTime);
+			metadataAuction=metadataAuction;
+			picture=picture;
+			tokenId=Nat64.toNat(tokenId);
 		};
 		if(not _isSupportedPayment(data.tokenPayment)) {
 			return #Err(#AddressPaymentNotExist);
@@ -115,19 +139,15 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		var currencyUnit = await tokenProvider.symbol();
 
 		// need transfer nft to market
-		if (data.typeAuction == #AuctionNFT) {
-			if (Option.isNull(data.tokenId)) {
-				return #Err(#InvalidTokenId);
-			};
-
-			let ownerToken = await nftProvider.ownerOf(_unwrap(data.tokenId));
+		if (typeAuction == "NFT") {
+			let ownerToken = await nftProvider.ownerOf(data.tokenId);
 			if (Option.isNull(ownerToken)) {
 				return #Err(#NotOwnerOfToken);
 			};
 
 			if (_unwrap(ownerToken) != caller) {
 				try {
-					let approvedFor = await nftProvider.getApproved(_unwrap(data.tokenId));
+					let approvedFor = await nftProvider.getApproved(data.tokenId);
 					if (approvedFor != caller) {
 						return #Err(#NotOwnerOrApprovedForToken);
 					};
@@ -136,16 +156,16 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				};
 			};
 
-			let tokenInfo = await nftProvider.getTokenInfo(_unwrap(data.tokenId));
+			let tokenInfo = await nftProvider.getTokenInfo(data.tokenId);
 
-			await nftProvider.transferFrom(caller, Principal.fromActor(Self), _unwrap(data.tokenId));
+			await nftProvider.transferFrom(caller, Principal.fromActor(Self), data.tokenId);
 
 			auctionIdCount += 1;
 
 			let auctionId = auctionIdCount;
 			var auction: Types.Auction = {
 				id= auctionId;
-				tokenId = data.tokenId;
+				tokenId = ?data.tokenId;
 				seller = caller;
 				winner = Principal.fromText("2vxsx-fae");
 				stepBid = data.stepBid;
@@ -158,8 +178,8 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				auctionState = #AuctionStarted;
 				isSend= true;
 				isReceived= false;
-				metadataAuction = null;
-				typeAuction = data.typeAuction;
+				metadataAuction = "";
+				typeAuction = "NFT";
 				picture=?_unwrap(tokenInfo).url;
 				currencyUnit=currencyUnit;
 				title=data.title;
@@ -168,7 +188,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 			idToAuction.put(auctionIdCount, auction);
 			auctionToBids.put(auctionIdCount, HashMap.fromIter<Nat, Types.Bid>(Iter.fromArray([]), 1, Nat.equal, Hash.hash));
 			return #Ok(auctionId);
-		}else if (data.typeAuction == #AuctionRealProduct) {
+		}else if (typeAuction == "REAL_PRODUCT") {
 			auctionPendingIdCount += 1;
 
 			let auctionPendingId = auctionPendingIdCount;
@@ -184,7 +204,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
         		voteDown = 0;
 				timePending = timePending;
 				timeStart = Time.now();
-				picture = _unwrap(data.picture);
+				picture = data.picture;
 				currencyUnit=currencyUnit;
 				title=data.title;
 				description=data.description;
@@ -216,7 +236,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 					return #Err(#CannotCancelOrder);
 				};
 				//need transfer nft to owner
-				if (auction.typeAuction == #AuctionNFT) {
+				if (auction.typeAuction == "NFT") {
 					try {
 						await nftProvider.transferFrom(Principal.fromActor(Self), auction.seller, _unwrap(auction.tokenId));
 					} catch(e) {
@@ -288,7 +308,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 					return #Err(#NotSeller);
 				};
 
-				if (auction.typeAuction != #AuctionRealProduct) {
+				if (auction.typeAuction != "REAL_PRODUCT") {
 					return #Err(#InvalidAuctionType);
 				};
 
@@ -331,7 +351,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				return #Err(#AuctionNotExist);
 			};
 			case (?auction) {
-				if (auction.typeAuction != #AuctionRealProduct) {
+				if (auction.typeAuction != "REAL_PRODUCT") {
 					return #Err(#InvalidAuctionType);
 				};
 
@@ -481,7 +501,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				return #Err(#AuctionNotExist);
 			};
 			case (?auction) {
-				if (auction.typeAuction != #AuctionNFT) {
+				if (auction.typeAuction != "NFT") {
 					return #Err(#CannotClaimRealProduct);
 				};
 				if (auction.auctionTime + auction.startTime > Time.now()) {
@@ -617,7 +637,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 					return #Err(#NoBidYet);
 				};
 
-				if (auction.typeAuction == #AuctionNFT) {
+				if (auction.typeAuction == "NFT") {
 					//transfer token to this caller
 					let realAmount = await _chargeFee(auction.tokenPayment, auction.currentPrice);
 					let check = await _transferTokenFromMarket(auction.tokenPayment, auction.winner, realAmount); 
@@ -625,7 +645,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 						return #Err(#ErrorSystem);
 					};
 					_convertAutionToFinish(auction);
-				}else if (auction.typeAuction == #AuctionRealProduct) {
+				}else if (auction.typeAuction == "REAL_PRODUCT") {
 					if (not auction.isSend) {
 						return #Err(#NotSend)
 					};
@@ -800,7 +820,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 					metadataAuction = auctionPendingData.metadataAuction;
 					isSend= false;
 					isReceived= false;
-					typeAuction = #AuctionRealProduct;
+					typeAuction = "REAL_PRODUCT";
 					picture = ?auctionPendingData.picture;
 					currencyUnit=auctionPendingData.currencyUnit;
 					title=auctionPendingData.title;
@@ -1103,7 +1123,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 						metadataAuction = auctionPendingData.metadataAuction;
 						isSend= false;
 						isReceived= false;
-						typeAuction = #AuctionRealProduct;
+						typeAuction = "REAL_PRODUCT";
 						picture = ?auctionPendingData.picture;
 						currencyUnit=auctionPendingData.currencyUnit;
 						title=auctionPendingData.title;

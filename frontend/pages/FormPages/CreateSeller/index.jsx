@@ -118,7 +118,7 @@ function CreateSeller() {
     <BaseLayout
       breadcrumb={[
         { label: "Home", route: "/presentation" },
-        { label: "Product detail" },
+        { label: "Become a Seller" },
       ]}
       title=""
     >

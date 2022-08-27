@@ -34,7 +34,7 @@ function StakeTable({ data }) {
         </MKButton>
       </Grid>
 
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ minWidth: 650, minHeight: 250 }} aria-label="simple table">
         <TableHead sx={{ display: "table-header-group" }}>
           <TableRow>
             <TableCell>Start Time</TableCell>

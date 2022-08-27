@@ -31,7 +31,7 @@ function Collections() {
     <BaseLayout
       breadcrumb={[
         { label: "Home", route: "/presentation" },
-        { label: "Product detail" },
+        { label: "My Collections" },
       ]}
       title=""
     >
