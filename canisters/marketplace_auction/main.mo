@@ -148,9 +148,9 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				tokenId = data.tokenId;
 				seller = caller;
 				winner = Principal.fromText("2vxsx-fae");
-				stepBid = data.stepBid;
-				startPrice = data.startPrice;
-				currentPrice = data.startPrice;
+				stepBid = Nat64.toNat(data.stepBid);
+				startPrice = Nat64.toNat(data.startPrice);
+				currentPrice = Nat64.toNat(data.startPrice);
 				tokenPayment = data.tokenPayment;
 				startTime = Time.now();
 				auctionTime = data.auctionTime;
@@ -175,8 +175,8 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 			var auctionPending: Types.AuctionPending = {
 				id= auctionPendingIdCount;
 				seller = caller;
-				stepBid = data.stepBid;
-				startPrice = data.startPrice;
+				stepBid = Nat64.toNat(data.stepBid);
+				startPrice = Nat64.toNat(data.startPrice);
 				tokenPayment = data.tokenPayment;
 				auctionTime = data.auctionTime;
 				metadataAuction = data.metadataAuction;
@@ -1157,5 +1157,6 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 
 	system func heartbeat() : async () {
 		await _automaticAcceptAuctionPending();
+
 	}
 }
