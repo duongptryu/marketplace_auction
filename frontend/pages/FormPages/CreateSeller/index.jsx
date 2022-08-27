@@ -5,6 +5,8 @@ import Container from "@mui/material/Container"
 import DauHeader from "components/Molecules/layouts/Header"
 import DauProgress from "components/Molecules/layouts/ProgressBar"
 import Seller from "components/Molecules/layouts/Form/CreateSeller"
+import BaseLayout from "layouts/sections/components/BaseLayout"
+
 import {
   ProcessingStep,
   SuccessStep,
@@ -113,33 +115,30 @@ function CreateSeller() {
   }, [dataCreate])
 
   return (
-    <>
-      <DauHeader
-        changeColorOnScroll={{
-          height: 1,
-          color: "transparent",
-          shadow: "none",
-        }}
+    <BaseLayout
+      breadcrumb={[
+        { label: "Home", route: "/presentation" },
+        { label: "Product detail" },
+      ]}
+      title=""
+    >
+      <DauProgress progress={progress} />
+      <Seller
+        onNextStep={handleNextStep}
+        values={values}
+        setValues={setValues}
+        action={handleCreateSeller}
+        setDataAction={setDataCreate}
       />
-      <Container>
-        <DauProgress progress={progress} />
-        <Seller
-          onNextStep={handleNextStep}
-          values={values}
-          setValues={setValues}
-          action={handleCreateSeller}
-          setDataAction={setDataCreate}
-        />
-        <ProcessingStep values={values} totalSteps={totalSteps} />
-        <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
-        <SuccessStep
-          values={values}
-          totalSteps={totalSteps}
-          success={isSuccess}
-          onClickOke={""}
-        />
-      </Container>
-    </>
+      <ProcessingStep values={values} totalSteps={totalSteps} />
+      <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
+      <SuccessStep
+        values={values}
+        totalSteps={totalSteps}
+        success={isSuccess}
+        onClickOke={""}
+      />
+    </BaseLayout>
   )
 }
 

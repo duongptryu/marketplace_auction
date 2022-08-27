@@ -57,10 +57,7 @@ import "@connect2ic/core/style.css"
 const btnStyle = {
   margin: 0,
   fontSize: "0.875rem",
-  fontWeight: 300,
   lineHeight: 1.5,
-  textTransform: "uppercase",
-  letterSpacing: "0.02857em",
   minWidth: "11.25rem",
   padding: "5px 16px",
   opacity: 1,

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 
 import DauHeader from "components/Molecules/layouts/Header"
 import Collection from "components/Molecules/layouts/Collection"
+import BaseLayout from "layouts/sections/components/BaseLayout"
 
 import { useCanister, useConnect } from "@connect2ic/react"
 import { Principal } from "@dfinity/principal"
@@ -27,16 +28,15 @@ function Collections() {
   }, [principal])
 
   return (
-    <>
-      <DauHeader
-        changeColorOnScroll={{
-          height: 1,
-          color: "transparent",
-          shadow: "none",
-        }}
-      />
+    <BaseLayout
+      breadcrumb={[
+        { label: "Home", route: "/presentation" },
+        { label: "Product detail" },
+      ]}
+      title=""
+    >
       <Collection items={data} />
-    </>
+    </BaseLayout>
   )
 }
 

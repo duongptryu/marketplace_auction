@@ -9,6 +9,7 @@ import {
   FormStepOne,
   FormStepTwo,
 } from "components/Molecules/layouts/Form/CreateRealProduct"
+import BaseLayout from "layouts/sections/components/BaseLayout"
 
 import {
   ProcessingStep,
@@ -131,38 +132,35 @@ function CreateRealProduct() {
   }, [dataCreate])
 
   return (
-    <>
-      <DauHeader
-        changeColorOnScroll={{
-          height: 1,
-          color: "transparent",
-          shadow: "none",
-        }}
+    <BaseLayout
+      breadcrumb={[
+        { label: "Home", route: "/presentation" },
+        { label: "Product detail" },
+      ]}
+      title=""
+    >
+      <DauProgress progress={progress} />
+      <FormStepOne
+        onNextStep={handleNextStep}
+        values={values}
+        setValues={setValues}
       />
-      <Container>
-        <DauProgress progress={progress} />
-        <FormStepOne
-          onNextStep={handleNextStep}
-          values={values}
-          setValues={setValues}
-        />
-        <FormStepTwo
-          onNextStep={handleNextStep}
-          onPreviousStep={handlePreviousStep}
-          values={values}
-          setValues={setValues}
-          action={handleCreateRealProduct}
-          setDataAction={setDataCreate}
-        />
-        <ProcessingStep values={values} totalSteps={totalSteps} />
-        <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
-        <SuccessStep
-          values={values}
-          totalSteps={totalSteps}
-          success={isSuccess}
-        />
-      </Container>
-    </>
+      <FormStepTwo
+        onNextStep={handleNextStep}
+        onPreviousStep={handlePreviousStep}
+        values={values}
+        setValues={setValues}
+        action={handleCreateRealProduct}
+        setDataAction={setDataCreate}
+      />
+      <ProcessingStep values={values} totalSteps={totalSteps} />
+      <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
+      <SuccessStep
+        values={values}
+        totalSteps={totalSteps}
+        success={isSuccess}
+      />
+    </BaseLayout>
   )
 }
 
