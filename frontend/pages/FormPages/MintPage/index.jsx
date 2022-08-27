@@ -65,6 +65,14 @@ function MintPage() {
       }
     } catch (error) {
       console.log(error)
+      setValues((currentValues) => {
+        return {
+          ...currentValues,
+          s3: {},
+        }
+      })
+      handleErrorStep()
+      setIsError(true)
     }
   }
   useEffect(() => {

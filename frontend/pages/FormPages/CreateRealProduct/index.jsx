@@ -47,7 +47,7 @@ function CreateRealProduct() {
       duration: 1,
       startPrice: "",
       stepBid: "",
-      currency: "BTC",
+      currency: "none",
     },
   })
   const [dataCreate, setDataCreate] = useState()
@@ -72,24 +72,25 @@ function CreateRealProduct() {
   const handleCreateRealProduct = async (values) => {
     try {
       const cid = await uploadToWeb3Storage(values.file)
+      console.log(values.currency)
       const params = {
         picture: replaceString(STRING_TOKEN, {
           cid: cid,
           name: values.file[0].name,
         }),
-        metadataAuction: values.file.map((file) => {
-          return {
-            file: replaceString(STRING_TOKEN, { cid: cid, name: file.name }),
-            description: file.name,
-          }
-        }),
+        metadataAuction: {
+          file: values.file.map((file) => {
+            return replaceString(STRING_TOKEN, { cid: cid, name: file.name })
+          }),
+          description: values.description,
+        },
         tokenPayment: values.currency,
         description: values.description,
         auctionTime: convertDaysToMiliSeconds(values.duration),
         title: values.title,
         tokenId: null,
-        startPrice: BigInt(+startPrice),
-        stepBid: BigInt(+stepBid),
+        startPrice: BigInt(values.startPrice),
+        stepBid: BigInt(values.stepBid),
         typeAuction: "AuctionRealProduct",
       }
       if (principal) {
@@ -100,12 +101,19 @@ function CreateRealProduct() {
       }
     } catch (error) {
       console.log(error)
+      setValues((currentValues) => {
+        return {
+          ...currentValues,
+          s4: {},
+        }
+      })
+      handleErrorStep()
+      setIsError(true)
     }
   }
 
   useEffect(() => {
     if (dataCreate) {
-      handleNextStep()
       setValues((currentValues) => {
         return {
           ...currentValues,
