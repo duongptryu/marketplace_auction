@@ -34,7 +34,7 @@ function FormStepOne({ onNextStep, values, setValues }) {
       mode: "anonymous",
     },
   )
-  const [symbols, setSymbols] = useState([{ id: "BTC", title: "Bitcoin" }])
+  const [symbols, setSymbols] = useState([{ id: "none", title: "None" }])
 
   const formik = useFormik({
     initialValues: values.s1,
@@ -55,6 +55,7 @@ function FormStepOne({ onNextStep, values, setValues }) {
         .typeError("Must be numeric.")
         .positive("More than 0.")
         .required("This field is required."),
+      currency: yup.object().typeError("Choose Right Currency."),
     }),
     enableReinitialize: true,
     onSubmit: (formikValues) => {
@@ -77,7 +78,7 @@ function FormStepOne({ onNextStep, values, setValues }) {
     try {
       const dataRes = await marketplace_auction.GetSupportedPayment()
       console.log(dataRes)
-      setSymbols(dataRes)
+      setSymbols([{ id: "none", title: "None" }, ...dataRes])
     } catch (err) {
       console.log(err)
     }

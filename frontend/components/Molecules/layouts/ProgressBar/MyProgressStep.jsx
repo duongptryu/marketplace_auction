@@ -188,7 +188,7 @@ MyProgressStep.propTypes = {
     "dark",
   ]),
   size: PropTypes.oneOf(["small", "medium", "large"]),
-  status: PropTypes.oneOf(["new", "pending", "done"]),
+  status: PropTypes.oneOf(["new", "pending", "done", "error"]),
   children: PropTypes.node.isRequired,
   placement: PropTypes.oneOf(["left", "right", "center"]),
 }
