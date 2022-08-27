@@ -7,7 +7,7 @@ export const STRING_TOKEN = "https://{cid}.ipfs.w3s.link/{name}"
 
 export const replaceString = (s, params) => {
   for (const key in params) {
-    s = s.replace(`{${key}}`, params[key])
+    s = s.replace(`{${key}}`, encodeURIComponent(params[key]))
   }
   return s
 }

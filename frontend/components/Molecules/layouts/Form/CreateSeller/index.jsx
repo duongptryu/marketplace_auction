@@ -20,7 +20,7 @@ import InstagramIcon from "@mui/icons-material/Instagram"
 // Import Image
 import defaultAvatar from "assets/images/default-avatar.png"
 
-function Seller({ onNextStep }) {
+function Seller({ onNextStep, values, setValues, action, setDataAction }) {
   const hiddenAvatarInput = useRef(null)
   const handleClick = () => {
     hiddenAvatarInput.current.click()
@@ -36,33 +36,30 @@ function Seller({ onNextStep }) {
   }
 
   const formik = useFormik({
-    initialValues: {
-      username: "",
-      email: "",
-      photo: {},
-      description: "",
-      twitter: "",
-      facebook: "",
-      instagram: "",
-    },
+    initialValues: values.s1,
     validationSchema: yup.object({
-      username: yup.string().required("dasdasdasd"),
-      email: yup.string().email().required("dasdasdas"),
+      username: yup.string().required("This field must be filled."),
+      email: yup.string().email().required("This field must be filled."),
     }),
     enableReinitialize: true,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log(values)
       onNextStep()
-      setTimeout(() => {
-        onNextStep()
-      }, 5000)
+      setValues({
+        s1: {
+          ...values,
+        },
+        s2: {},
+      })
+      const res = await action(values)
+      setDataAction(res)
     },
   })
   const handleReset = () => {
     formik.handleReset()
     setSourceImg(defaultAvatar)
   }
-  return (
+  return Object.keys(values).length === 1 ? (
     <MKBox
       component="section"
       bgColor="grey-100"
@@ -250,7 +247,7 @@ function Seller({ onNextStep }) {
         </Grid>
       </Container>
     </MKBox>
-  )
+  ) : null
 }
 
 export default Seller

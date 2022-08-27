@@ -7,7 +7,7 @@ identity account1 "../config/account1.pem";
 let resp = call marketplaceCanister.AddOrder(account1,
     record {
         title="test product"; 
-        tokenId=null; 
+        tokenId=opt 1; 
         auctionTime=60000000000; 
         description="test"; 
         picture=opt "https://picsum.photos/600/400"; 
@@ -29,7 +29,7 @@ identity account2 "../config/account2.pem";
 let resp = call marketplaceCanister.AddOrder(account2,
     record {
         title="test product 2"; 
-        tokenId=null; 
+        tokenId=opt 1; 
         auctionTime=60000000000; 
         description="test 2"; 
         picture=opt "https://picsum.photos/600/400"; 
@@ -47,10 +47,11 @@ resp;
 assert resp != variant { Err };
 
 "- Should create product correctly 2";
+marketplaceCanister;
 let resp = call marketplaceCanister.AddOrder(account2,
     record {
         title="test product 3"; 
-        tokenId=null; 
+        tokenId=opt 1; 
         auctionTime=60000000000; 
         description="test 3"; 
         picture=opt "https://picsum.photos/600/400"; 
