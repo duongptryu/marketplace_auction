@@ -29,7 +29,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 	private stable var auctionPendingIdCount: Nat = 0;
     private stable var bitIdCount: Nat = 0;
     private stable var fee = 10;
-	private stable var timePending = 8600000000;
+	private stable var timePending = 86000000000;
 
     private stable var supportedPaymentStore: [(Principal, Types.SupportPaymentResp)] = [];
     private stable var auctionStore: [(Nat, Types.Auction)] = [];
@@ -670,10 +670,12 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		};
 	};
 
-	public shared(msg) func VoteAuctionPending(caller: Principal, data: Types.VoteMetadata) : async Types.VoteAuctionPendingResult{
+	public shared(msg) func VoteAuctionPending(caller: Principal, _auctionPendingId: Nat64, vote: Text) : async Types.VoteAuctionPendingResult{
 		if (Principal.isAnonymous(caller)) {
 			return #Err(#Unauthorized);
 		};
+
+		let auctionPendingId = Nat64.toNat(_auctionPendingId);
 
 		//check if caller steak token
 		let check = await stakeProvider.isStake(caller);
@@ -681,7 +683,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 			return #Err(#NotValidator);
 		};
 
-		switch(idToAuctionPending.get(data.auctionPendingId)){
+		switch(idToAuctionPending.get(auctionPendingId)){
 			case null{
 				return #Err(#AuctionPendingNotExist);
 			};
@@ -689,12 +691,12 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				if (auctionPendingData.timeStart + auctionPendingData.timePending > Time.now()) {
 					return #Err(#TimeVoteIsExpired);
 				};
-				if (Option.isSome(_unwrap(auctionPendingToVotes.get(data.auctionPendingId)).get(caller))) {
+				if (Option.isSome(_unwrap(auctionPendingToVotes.get(auctionPendingId)).get(caller))) {
 					return #Err(#AlreadyVoted);
 				};
 
-				switch(data.vote){
-					case (#Up){
+				switch(vote){
+					case ("Up"){
 						let newAuctionPending = {
 							id = auctionPendingData.id;
 							seller = auctionPendingData.seller;
@@ -712,9 +714,10 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 							title=auctionPendingData.title;
 							description=auctionPendingData.description;
 						};
-						idToAuctionPending.put(data.auctionPendingId, newAuctionPending);
+						idToAuctionPending.put(auctionPendingId, newAuctionPending);
+						_unwrap(auctionPendingToVotes.get(auctionPendingId)).put(caller, #Up);
 					};
-					case(#Down){
+					case("Down"){
 						let newAuctionPending = {
 							id = auctionPendingData.id;
 							seller = auctionPendingData.seller;
@@ -732,11 +735,13 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 							title=auctionPendingData.title;
 							description=auctionPendingData.description;
 						};
-						idToAuctionPending.put(data.auctionPendingId, newAuctionPending);
+						idToAuctionPending.put(auctionPendingId, newAuctionPending);
+						_unwrap(auctionPendingToVotes.get(auctionPendingId)).put(caller, #Down);
 					};
+					case(_) {
+						return #Err(#Other);
+					}
 				};
-
-				_unwrap(auctionPendingToVotes.get(data.auctionPendingId)).put(caller, data.vote);
 
 				let check = await _transferTokenFromMarket(dip20, caller, 1000);
 				if (not check) {
@@ -1078,7 +1083,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 	private func _automaticAcceptAuctionPending(): async () {
 		Iter.iterate(
 			idToAuctionPending.entries(),func ((tokenId: Nat, auctionPendingData: Types.AuctionPending), index: Nat) {
-				if (Time.now() <= auctionPendingData.timeStart + timePending) {
+				if (Time.now() >= auctionPendingData.timeStart + timePending) {
 					auctionIdCount += 1;
 					let id = auctionIdCount;
 
@@ -1160,8 +1165,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		auctionToVotesStore := [];
 	};
 
-	// system func heartbeat() : async () {
-	// 	await _automaticAcceptAuctionPending();
-
-	// }
+	system func heartbeat() : async () {
+		await _automaticAcceptAuctionPending();
+	}
 }
