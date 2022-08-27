@@ -72,17 +72,17 @@ assert resp != variant { Err };
 "Voting";
 " - Should voting correctly 1";
 identity account2 "../config/account2.pem";
-let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=1; vote=variant {Up}});
+let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=1; "Up"});
 resp;
 
 " - Should voting correctly 2";
 identity account2 "../config/account2.pem";
-let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=2; vote=variant {Up}});
+let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=2; "Up"});
 resp;
 
 " - Should voting correctly 3";
 identity account2 "../config/account2.pem";
-let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=3; vote=variant {Up}});
+let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=3; "Down"});
 resp;
 
 
