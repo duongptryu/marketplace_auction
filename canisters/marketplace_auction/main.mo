@@ -29,7 +29,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 	private stable var auctionPendingIdCount: Nat = 0;
     private stable var bitIdCount: Nat = 0;
     private stable var fee = 10;
-	private stable var timePending = 8600000000;
+	private stable var timePending = 86000000000;
 
     private stable var supportedPaymentStore: [(Principal, Types.SupportPaymentResp)] = [];
     private stable var auctionStore: [(Nat, Types.Auction)] = [];
@@ -103,7 +103,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 
 	
 	//ORDER
-	public shared(msg) func AddOrder(caller: Principal, data: Types.AuctionCreate): async Types.AddAuctionResult {
+		public shared(msg) func AddOrder(caller: Principal, data: Types.AuctionCreate): async Types.AddAuctionResult {
 		if (not _isSeller(caller)) {
 			return #Err(#NotSeller);
 		};
@@ -654,21 +654,28 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		}));
 	};
 
-	public query func GetAAuctionPending(id: Nat) : async Types.GetAuctionPendingResult {
+	public query func GetAAuctionPending(id: Nat) : async Types.PendingResp {
 		switch (idToAuctionPending.get(id)) {
 			case null {
 				return #Err(#AuctionPendingNotExist);
 			};
 			case (?auctionPending) {
-				return #Ok(auctionPending);
+				let seller = _unwrap(idToSeller.get(auctionPending.seller)); 
+				let acP = {
+					product = auctionPending;
+					seller = seller;
+				}; 
+				return #Ok(acP);
 			};
 		};
 	};
 
-	public shared(msg) func VoteAuctionPending(caller: Principal, data: Types.VoteMetadata) : async Types.VoteAuctionPendingResult{
+	public shared(msg) func VoteAuctionPending(caller: Principal, _auctionPendingId: Nat64, vote: Text) : async Types.VoteAuctionPendingResult{
 		if (Principal.isAnonymous(caller)) {
 			return #Err(#Unauthorized);
 		};
+
+		let auctionPendingId = Nat64.toNat(_auctionPendingId);
 
 		//check if caller steak token
 		let check = await stakeProvider.isStake(caller);
@@ -676,7 +683,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 			return #Err(#NotValidator);
 		};
 
-		switch(idToAuctionPending.get(data.auctionPendingId)){
+		switch(idToAuctionPending.get(auctionPendingId)){
 			case null{
 				return #Err(#AuctionPendingNotExist);
 			};
@@ -684,12 +691,12 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				if (auctionPendingData.timeStart + auctionPendingData.timePending > Time.now()) {
 					return #Err(#TimeVoteIsExpired);
 				};
-				if (Option.isSome(_unwrap(auctionPendingToVotes.get(data.auctionPendingId)).get(caller))) {
+				if (Option.isSome(_unwrap(auctionPendingToVotes.get(auctionPendingId)).get(caller))) {
 					return #Err(#AlreadyVoted);
 				};
 
-				switch(data.vote){
-					case (#Up){
+				switch(vote){
+					case ("Up"){
 						let newAuctionPending = {
 							id = auctionPendingData.id;
 							seller = auctionPendingData.seller;
@@ -707,9 +714,10 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 							title=auctionPendingData.title;
 							description=auctionPendingData.description;
 						};
-						idToAuctionPending.put(data.auctionPendingId, newAuctionPending);
+						idToAuctionPending.put(auctionPendingId, newAuctionPending);
+						_unwrap(auctionPendingToVotes.get(auctionPendingId)).put(caller, #Up);
 					};
-					case(#Down){
+					case("Down"){
 						let newAuctionPending = {
 							id = auctionPendingData.id;
 							seller = auctionPendingData.seller;
@@ -727,11 +735,13 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 							title=auctionPendingData.title;
 							description=auctionPendingData.description;
 						};
-						idToAuctionPending.put(data.auctionPendingId, newAuctionPending);
+						idToAuctionPending.put(auctionPendingId, newAuctionPending);
+						_unwrap(auctionPendingToVotes.get(auctionPendingId)).put(caller, #Down);
 					};
+					case(_) {
+						return #Err(#Other);
+					}
 				};
-
-				_unwrap(auctionPendingToVotes.get(data.auctionPendingId)).put(caller, data.vote);
 
 				let check = await _transferTokenFromMarket(dip20, caller, 1000);
 				if (not check) {
@@ -1070,35 +1080,40 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
             case (?x_) { x_ };
     };
 
-	private func _automaticAcceptAuctionPending(auctionPendingData: Types.AuctionPending): async () {
-				auctionIdCount += 1;
-				let id = auctionIdCount;
+	private func _automaticAcceptAuctionPending(): async () {
+		Iter.iterate(
+			idToAuctionPending.entries(),func ((tokenId: Nat, auctionPendingData: Types.AuctionPending), index: Nat) {
+				if (Time.now() >= auctionPendingData.timeStart + timePending) {
+					auctionIdCount += 1;
+					let id = auctionIdCount;
 
-				let auction: Types.Auction = {
-					id = auctionIdCount;
-					tokenId = null;
-					seller = auctionPendingData.seller;
-					winner = Principal.fromText("2vxsx-fae");
-					stepBid = auctionPendingData.stepBid;
-					currentPrice = auctionPendingData.startPrice;	
-					startPrice = auctionPendingData.startPrice;
-					tokenPayment = auctionPendingData.tokenPayment;
-					startTime = Time.now();
-					auctionTime = auctionPendingData.auctionTime;
-					highestBidId = 0;
-					auctionState = #AuctionStarted;
-					metadataAuction = auctionPendingData.metadataAuction;
-					isSend= false;
-					isReceived= false;
-					typeAuction = #AuctionRealProduct;
-					picture = ?auctionPendingData.picture;
-					currencyUnit=auctionPendingData.currencyUnit;
-					title=auctionPendingData.title;
-					description=auctionPendingData.description;
-				};
-				idToAuction.put(id, auction);
-				auctionToBids.put(auctionIdCount, HashMap.fromIter<Nat, Types.Bid>(Iter.fromArray([]), 1, Nat.equal, Hash.hash));
-				idToAuctionPending.delete(auctionPendingData.id);
+					let auction: Types.Auction = {
+						id = auctionIdCount;
+						tokenId = null;
+						seller = auctionPendingData.seller;
+						winner = Principal.fromText("2vxsx-fae");
+						stepBid = auctionPendingData.stepBid;
+						currentPrice = auctionPendingData.startPrice;	
+						startPrice = auctionPendingData.startPrice;
+						tokenPayment = auctionPendingData.tokenPayment;
+						startTime = Time.now();
+						auctionTime = auctionPendingData.auctionTime;
+						highestBidId = 0;
+						auctionState = #AuctionStarted;
+						metadataAuction = auctionPendingData.metadataAuction;
+						isSend= false;
+						isReceived= false;
+						typeAuction = #AuctionRealProduct;
+						picture = ?auctionPendingData.picture;
+						currencyUnit=auctionPendingData.currencyUnit;
+						title=auctionPendingData.title;
+						description=auctionPendingData.description;
+					};
+					idToAuction.put(id, auction);
+					auctionToBids.put(auctionIdCount, HashMap.fromIter<Nat, Types.Bid>(Iter.fromArray([]), 1, Nat.equal, Hash.hash));
+					idToAuctionPending.delete(auctionPendingData.id);
+				}
+			});
 	};
 
     system func preupgrade() {
@@ -1150,12 +1165,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		auctionToVotesStore := [];
 	};
 
-	// system func heartbeat() : async () {
-	// 	Iter.iterate(
-	// 		idToAuctionPending.entries(),func ((tokenId: Nat, pendingAution: Types.AuctionPending)) {
-	// 			if (Time.now() <= pendingAution.timeStart + pendingAution.auctionTime) {
-	// 				await _automaticAcceptAuctionPending(pendingAution);
-	// 			}
-	// 	});
-	// }
+	system func heartbeat() : async () {
+		await _automaticAcceptAuctionPending();
+	}
 }

@@ -315,4 +315,6 @@ module {
     public type CancelAuctionPendingResult = Result<Bool, AuctionPendingError>;
 
     public type SellerErrorResult = Result<Bool, ApiSellerError>;
+
+    public type PendingResp = Result<AuctionPendingResp, AuctionPendingError>
 }

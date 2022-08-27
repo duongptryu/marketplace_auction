@@ -20,7 +20,6 @@ import Tab from '@mui/material/Tab';
 import './style.css';
 import bgVideo from "assets/video/top-block-bg_1.mp4";
 import humanSVG from "assets/images/shapes/person.svg";
-import Transaction from "./tabs/transaction.jsx";
 import { useCanister } from "@connect2ic/react"
 import { Route, Routes, useParams } from 'react-router-dom';
 import { useBalance, useWallet } from "@connect2ic/react";
@@ -28,7 +27,7 @@ import { Principal } from '@dfinity/principal'
 // import { Nat } from "@dfinity/nat"
 import { useStore } from '../../../store';
 import { useConnect } from '@connect2ic/react';
-import { useEffect } from 'react';
+import moment from 'moment';
 
 const replaceNumber = (num) => {
   return parseInt(num);
@@ -75,7 +74,7 @@ function a11yProps(index) {
 }
 
 function ProductDetailBid() {
-  const [marketplace_auction, {canisterDefinition}] = useCanister("marketplace_auction", { mode: 'anonymous' })
+  const [marketplace_auction, { canisterDefinition }] = useCanister("marketplace_auction", { mode: 'anonymous' })
   const [dip20, { loading20, error20 }] = useCanister("dip20", { mode: 'anonymous' })
   const { principal } = useConnect()
   const [value, setValue] = React.useState(0);
@@ -95,27 +94,18 @@ function ProductDetailBid() {
 
   const getProduct = async () => {
     try {
-      const datas = await marketplace_auction.GetAuction(parseInt(params.id));
-      datas.Ok.product.dateLine = deadLineTime(datas.Ok.product.startTime, datas.Ok.product.auctionTime);
-      // lay ngay den date Line
-      const a = replaceNumber(datas.Ok.product.startTime) + replaceNumber(datas.Ok.product.auctionTime);
-      const b = new Date(a / 1000000);
-      const c = new Date();
-      const d = b.getDate() - c.getDate();
-      const aucTime = new Date(replaceNumber(datas.Ok.product.auctionTime) / 1000000);
-      datas.Ok.product.processToBid = d + ' day';
-      if (c > b) {
-        datas.Ok.product.processBar = 100
-      } else {
-        datas.Ok.product.processBar = (aucTime.getDate() - d) / (aucTime.getDate()) * 100
-      }
+      console.log('alo')
+      const datas = await marketplace_auction.GetAAuctionPending(parseInt(params.id));
+      console.log('a auction pending', datas)
+      const duration = moment.duration(parseInt(datas.Ok.product.auctionTime) / 1000000, 'days');
+      datas.Ok.product.duration = duration._days + ' days'
       setProduct(datas);
-      getHistoryBid()
+      // getHistoryBid()
     }
-    catch(e) {
+    catch (e) {
       console.log('message error', e)
     }
-    
+
   };
 
   const getHistoryBid = async () => {
@@ -147,8 +137,8 @@ function ProductDetailBid() {
 
         console.log('-->', Principal.fromText(principal))
         const res = await dip20.approve(Principal.fromText(principal), Principal.fromText(stateMarket), BigInt(3600))
-        console.log('mum', res);  
-        const biding = await marketplace_auction.BidAuction(Principal.fromText(principal),{
+        console.log('mum', res);
+        const biding = await marketplace_auction.BidAuction(Principal.fromText(principal), {
           auctionId: 2,
           amount: 3600,
         })
@@ -166,7 +156,6 @@ function ProductDetailBid() {
       const publicKey = await window.ic.plug.requestConnect();
       console.log(`The connected user's public key is:`, publicKey);
       getProduct()
-      getHistoryBid()
     } catch (e) {
       console.log(e);
     }
@@ -183,15 +172,30 @@ function ProductDetailBid() {
     return amountToken + ' ' + unitt
   }
 
+  const handleVote = async (type) => {
+    try {
+      if(!wallet) {
+        const publicKey = await window.ic.plug.requestConnect();
+        console.log('window', window.ic.plug);
+      }
+      else {
+        const principalWallet = Principal.fromText(principal)
+        const res = await marketplace_auction.VoteAuctionPending(principalWallet, {auctionPendingId: parseInt(product.Ok.product.id),vote: type})
+        console.log('ressss', res)
+      }
+
+    }
+    catch(e) {
+      console.log('error',e)
+    }    
+  }
+
 
   React.useEffect(() => {
     getProduct()
-    getHistoryBid()
+    // getHistoryBid()
   }, []);
 
-  React.useEffect(() => {
-    console.log('error20', error20);
-  }, [error20]);
   return (
     <BaseLayout
       breadcrumb={[
@@ -235,7 +239,7 @@ function ProductDetailBid() {
                   <div className='card-root-image'>
                     <MKBox
                       component="img"
-                      src={product.Ok.product.picture[0]}
+                      src={product.Ok.product.picture}
                       width="100%"
                       height="400px"
                       my="auto"
@@ -269,7 +273,7 @@ function ProductDetailBid() {
                     </dt>
                     <dd>
                       <MKTypography color='dark' textGradient variant="inherit" mb={1}>
-                        {product.Ok.product.processToBid}
+                        {product.Ok.product.duration}
                       </MKTypography>
                     </dd>
                     <dt>
@@ -292,28 +296,18 @@ function ProductDetailBid() {
                         {replaceNumber(product.Ok.product.startPrice)} {product.Ok.product.currencyUnit}
                       </MKTypography>
                     </dd>
-                    <dt>
-                      <MKTypography color='dark' fontWeight="bold" textGradient variant="inherit" mb={1}>
-                        Current Price:
-                      </MKTypography>
-                    </dt>
-                    <dd>
-                      <MKTypography color='dark' textGradient variant="inherit" mb={1}>
-                        {replaceNumber(product.Ok.product.currentPrice)} {product.Ok.product.currencyUnit}
-                      </MKTypography>
-                    </dd>
+
                   </dl>
                   <div>
                     <MKBox py={3} px={3} sx={{ mx: "auto", textAlign: "center" }}>
-                      <MKTypography color='primary' textGradient variant="body1" fontWeight="bold" mb={1}>Total wallet :
-                        {assets ? getAmount(assets, product.Ok.product.currencyUnit) : 'connect Wallet'}</MKTypography>
-                      <MKInput label="Your total" value={inputNumToken} onChange={handleChangeInputBid} fullWidth />
-                      <MKBox pt={2}>
-                        <MKButton variant="gradient" color="primary" fullWidth onClick={handleBid}>
-                          BID
+                      <MKButton variant="gradient" color="success" fullWidth onClick={() =>handleVote('Up')}>
+                        Up
+                      </MKButton>
+                      <MKBox py={3} sx={{ mx: "auto", textAlign: "center" }}>
+                        <MKButton variant="gradient" color="error" fullWidth onClick={() =>handleVote('Down')}>
+                          Down
                         </MKButton>
                       </MKBox>
-
                     </MKBox>
                   </div>
                 </Grid>
@@ -386,7 +380,12 @@ function ProductDetailBid() {
               </MKBox>
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <Transaction data={listBids} />
+              <MKBox py={3} px={3} sx={{ mx: "auto", textAlign: "center" }} className="box-comment">
+                <img className='img-human' src={humanSVG} alt="" />
+                <MKTypography color='primary' textGradient variant="body1" fontWeight="bold" mb={1} style={{ "alignSelf": "center" }}>
+                  Comming soon!
+                </MKTypography>
+              </MKBox>
             </TabPanel>
           </MKBox></> : null}
     </BaseLayout>
