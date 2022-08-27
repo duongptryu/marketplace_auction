@@ -5,6 +5,7 @@ import Container from "@mui/material/Container"
 import DauHeader from "components/Molecules/layouts/Header"
 import DauProgress from "components/Molecules/layouts/ProgressBar"
 import MintProduct from "components/Molecules/layouts/Form/MintProduct"
+import BaseLayout from "layouts/sections/components/BaseLayout"
 import {
   ProcessingStep,
   SuccessStep,
@@ -94,33 +95,30 @@ function MintPage() {
   }, [dataMint])
 
   return (
-    <>
-      <DauHeader
-        changeColorOnScroll={{
-          height: 1,
-          color: "transparent",
-          shadow: "none",
-        }}
+    <BaseLayout
+      breadcrumb={[
+        { label: "Home", route: "/presentation" },
+        { label: "Product detail" },
+      ]}
+      title=""
+    >
+      <DauProgress progress={progress} />
+      <MintProduct
+        onNextStep={handleNextStep}
+        values={values}
+        setValues={setValues}
+        action={handleMint}
+        setDataAction={setDataMint}
       />
-      <Container>
-        <DauProgress progress={progress} />
-        <MintProduct
-          onNextStep={handleNextStep}
-          values={values}
-          setValues={setValues}
-          action={handleMint}
-          setDataAction={setDataMint}
-        />
-        <ProcessingStep values={values} totalSteps={totalSteps} />
-        <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
-        <SuccessStep
-          values={values}
-          totalSteps={totalSteps}
-          success={isSuccess}
-          onClickOke={""}
-        />
-      </Container>
-    </>
+      <ProcessingStep values={values} totalSteps={totalSteps} />
+      <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
+      <SuccessStep
+        values={values}
+        totalSteps={totalSteps}
+        success={isSuccess}
+        onClickOke={""}
+      />
+    </BaseLayout>
   )
 }
 

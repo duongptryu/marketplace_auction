@@ -16,9 +16,12 @@ import { Container } from "@mui/material"
 
 import StakeTable from "./components/Molecules/layouts/Table/StakeTable"
 import MyStake from "pages/TablePages/MyStake"
+import Collection from "components/Molecules/layouts/Collection"
+
+import Collections from "pages/Collections"
 
 function Test() {
-  return <MyStake />
+  return <Collections />
 }
 
 export default Test

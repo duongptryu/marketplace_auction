@@ -63,15 +63,12 @@ function Presentation() {
   )
   const [products, setProducts] = React.useState([])
 
-  const getProducts = async () => {
+  React.useEffect(async () => {
     const res = await marketplace_auction.GetAuctions()
     console.log("res", res)
     setProducts(res)
-  }
-
-  React.useEffect(() => {
-    getProducts()
   }, [])
+  
   return (
     <>
       <DauHeader

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 
 import DauHeader from "components/Molecules/layouts/Header"
 import StakeForm from "components/Molecules/layouts/Form/StakeForm"
+import BaseLayout from "layouts/sections/components/BaseLayout"
 
 import Container from "@mui/material/Container"
 import { useCanister, useConnect } from "@connect2ic/react"
@@ -48,7 +49,7 @@ function StakeToken() {
   useEffect(async () => {
     try {
       const dataRes = await staking.GetStakingPackage()
-      console.log(dataRes)
+      console.log(dataRes, "packages")
       setData(convertData(dataRes))
     } catch (e) {
       console.log(e)
@@ -78,25 +79,22 @@ function StakeToken() {
   }, [dataStake])
 
   return (
-    <>
-      <DauHeader
-        changeColorOnScroll={{
-          height: 1,
-          color: "transparent",
-          shadow: "none",
-        }}
-      />
-      <Container>
-        {data ? (
-          <StakeForm
-            dataItems={data}
-            action={uploadStakingPackage}
-            resAction={dataStake}
-            setResAction={setDataStake}
-          />
-        ) : null}
-      </Container>
-    </>
+    <BaseLayout
+      breadcrumb={[
+        { label: "Home", route: "/presentation" },
+        { label: "Product detail" },
+      ]}
+      title=""
+    >
+      {data ? (
+        <StakeForm
+          dataItems={data}
+          action={uploadStakingPackage}
+          resAction={dataStake}
+          setResAction={setDataStake}
+        />
+      ) : null}
+    </BaseLayout>
   )
 }
 

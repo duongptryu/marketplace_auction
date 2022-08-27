@@ -76,6 +76,7 @@
 .card-detail {
     padding: 0px 0px 8px 15px;
     line-height: 18px;
+    display: block !important;
 }
 
 .card-action {

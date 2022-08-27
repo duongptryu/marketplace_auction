@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 
 import DauHeader from "components/Molecules/layouts/Header"
 import StakeTable from "components/Molecules/layouts/Table/StakeTable"
+import BaseLayout from "layouts/sections/components/BaseLayout"
 
 import { useCanister, useConnect } from "@connect2ic/react"
 import { Principal } from "@dfinity/principal"
@@ -53,16 +54,15 @@ function MyStake() {
   }, data)
 
   return (
-    <>
-      <DauHeader
-        changeColorOnScroll={{
-          height: 1,
-          color: "transparent",
-          shadow: "none",
-        }}
-      />
-      <Container>{data ? <StakeTable data={data} /> : null}</Container>
-    </>
+    <BaseLayout
+      breadcrumb={[
+        { label: "Home", route: "/presentation" },
+        { label: "Product detail" },
+      ]}
+      title=""
+    >
+      {data ? <StakeTable data={data} /> : null}
+    </BaseLayout>
   )
 }
 
