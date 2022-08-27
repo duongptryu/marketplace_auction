@@ -135,7 +135,7 @@ function CreateRealProduct() {
     <BaseLayout
       breadcrumb={[
         { label: "Home", route: "/presentation" },
-        { label: "Product detail" },
+        { label: "Create Real Product" },
       ]}
       title=""
     >

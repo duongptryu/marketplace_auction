@@ -16,7 +16,8 @@ const routesDefault = {
     { label: "Success", status: "new" },
   ],
   functions: {
-    nextStep: (progress) => {
+    nextStep: (currentProgress) => {
+      let progress = currentProgress
       for (let i = 0; i < progress.length; i++) {
         if (progress[i].status === "pending") {
           progress[i].status = "done"
@@ -27,7 +28,8 @@ const routesDefault = {
       }
       return progress
     },
-    previousStep: (progress) => {
+    previousStep: (currentProgress) => {
+      let progress = currentProgress
       for (let i = progress.length - 1; i >= 0; i--) {
         if (progress[i].status === "pending" && i !== 0) {
           progress[i].status = "new"
@@ -38,7 +40,8 @@ const routesDefault = {
       }
       return progress
     },
-    nextErrorStep: (progress) => {
+    nextErrorStep: (currentProgress) => {
+      let progress = currentProgress
       for (let i = 0; i < progress.length; i++) {
         if (progress[i].status === "pending") {
           progress[i].status = "done"

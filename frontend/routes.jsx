@@ -256,7 +256,7 @@ const routes = [
       {
         name: "detail product bid",
         route: "/pages/detailProduct/ProductDetailBid/:id",
-        component: <ProductDetailBid />,ProductDetailPending
+        component: <ProductDetailBid />,
       },
       {
         name: "detail product pending",
@@ -284,14 +284,6 @@ const routes = [
         component: <StakeToken />,
       },
     ],
-    // name: "stake",
-    // collapse: [
-    //   {
-    //     name: " Add Stake ",
-    //     route: "/pages/stake/AddStakeToken",
-    //     component: <AddStakeToken />,
-    //   },
-    // ],
   },
 
   {

@@ -82,7 +82,8 @@ function StakeToken() {
     <BaseLayout
       breadcrumb={[
         { label: "Home", route: "/presentation" },
-        { label: "Product detail" },
+        { label: "My Stake", route: "/stake" },
+        { label: "Stake Token" },
       ]}
       title=""
     >

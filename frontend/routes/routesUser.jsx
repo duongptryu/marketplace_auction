@@ -78,47 +78,22 @@ const routesUser = [
         name: "my account",
         collapse: [
           {
-            name: "home & profile",
+            name: "profile",
             route: "/",
             component: <></>,
           },
           {
-            name: "my orders",
-            route: "/",
+            name: "my stakes",
+            route: "/stake",
             component: <></>,
           },
           {
-            name: "my request",
-            route: "/",
+            name: "my collections",
+            route: "/collection",
             component: <></>,
           },
           {
-            name: "my wallet",
-            route: "/",
-            component: <></>,
-          },
-        ],
-      },
-      {
-        name: "seller center",
-        collapse: [
-          {
-            name: "my request 1",
-            route: "/",
-            component: <></>,
-          },
-          {
-            name: "my request 2",
-            route: "/",
-            component: <></>,
-          },
-          {
-            name: "my request 3",
-            route: "/",
-            component: <></>,
-          },
-          {
-            name: "my request 4",
+            name: "my products",
             route: "/",
             component: <></>,
           },

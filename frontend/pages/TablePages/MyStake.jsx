@@ -57,7 +57,7 @@ function MyStake() {
     <BaseLayout
       breadcrumb={[
         { label: "Home", route: "/presentation" },
-        { label: "Product detail" },
+        { label: "My Stake" },
       ]}
       title=""
     >
