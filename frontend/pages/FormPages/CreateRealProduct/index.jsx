@@ -74,30 +74,23 @@ function CreateRealProduct() {
     try {
       const cid = await uploadToWeb3Storage(values.file)
       console.log(values.currency)
-      const params = {
-        picture: replaceString(STRING_TOKEN, {
-          cid: cid,
-          name: values.file[0].name,
-        }),
-        metadataAuction: {
-          file: values.file.map((file) => {
-            return replaceString(STRING_TOKEN, { cid: cid, name: file.name })
-          }),
-          description: values.description,
-        },
-        tokenPayment: values.currency,
-        description: values.description,
-        auctionTime: convertDaysToMiliSeconds(values.duration),
-        title: values.title,
-        tokenId: null,
-        startPrice: BigInt(values.startPrice),
-        stepBid: BigInt(values.stepBid),
-        typeAuction: "AuctionRealProduct",
-      }
       if (principal) {
         return await marketplace_auction.AddOrder(
           Principal.fromText(principal),
-          params,
+          "REAL_PRODUCT",
+          values.title,
+          BigInt(1),
+          values.description,
+          BigInt(values.stepBid),
+          BigInt(values.startPrice),
+          values.currency,
+          convertDaysToMiliSeconds(values.duration),
+          values.file
+            .map((file) => {
+              return replaceString(STRING_TOKEN, { cid: cid, name: file.name })
+            })
+            .join(" "),
+          replaceString(STRING_TOKEN, { cid: cid, name: values.file[0].name }),
         )
       }
     } catch (error) {
