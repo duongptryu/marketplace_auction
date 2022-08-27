@@ -654,13 +654,18 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		}));
 	};
 
-	public query func GetAAuctionPending(id: Nat) : async Types.GetAuctionPendingResult {
+	public query func GetAAuctionPending(id: Nat) : async Types.PendingResp {
 		switch (idToAuctionPending.get(id)) {
 			case null {
 				return #Err(#AuctionPendingNotExist);
 			};
 			case (?auctionPending) {
-				return #Ok(auctionPending);
+				let seller = _unwrap(idToSeller.get(auctionPending.seller)); 
+				let acP = {
+					product = auctionPending;
+					seller = seller;
+				}; 
+				return #Ok(acP);
 			};
 		};
 	};
