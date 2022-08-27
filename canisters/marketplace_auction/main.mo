@@ -103,7 +103,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 
 	
 	//ORDER
-	public shared(msg) func AddOrder(caller: Principal, data: Types.AuctionCreate): async Types.AddAuctionResult {
+		public shared(msg) func AddOrder(caller: Principal, data: Types.AuctionCreate): async Types.AddAuctionResult {
 		if (not _isSeller(caller)) {
 			return #Err(#NotSeller);
 		};
@@ -148,9 +148,9 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				tokenId = data.tokenId;
 				seller = caller;
 				winner = Principal.fromText("2vxsx-fae");
-				stepBid = Nat64.toNat(data.stepBid);
-				startPrice = Nat64.toNat(data.startPrice);
-				currentPrice = Nat64.toNat(data.startPrice);
+				stepBid = data.stepBid;
+				startPrice = data.startPrice;
+				currentPrice = data.startPrice;
 				tokenPayment = data.tokenPayment;
 				startTime = Time.now();
 				auctionTime = data.auctionTime;
@@ -175,8 +175,8 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 			var auctionPending: Types.AuctionPending = {
 				id= auctionPendingIdCount;
 				seller = caller;
-				stepBid = Nat64.toNat(data.stepBid);
-				startPrice = Nat64.toNat(data.startPrice);
+				stepBid = data.stepBid;
+				startPrice = data.startPrice;
 				tokenPayment = data.tokenPayment;
 				auctionTime = data.auctionTime;
 				metadataAuction = data.metadataAuction;
@@ -1160,8 +1160,8 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		auctionToVotesStore := [];
 	};
 
-	system func heartbeat() : async () {
-		await _automaticAcceptAuctionPending();
+	// system func heartbeat() : async () {
+	// 	await _automaticAcceptAuctionPending();
 
-	}
+	// }
 }
