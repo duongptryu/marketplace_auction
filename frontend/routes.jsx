@@ -52,6 +52,7 @@ import ProductDetailPending from "../frontend/pages/ProductDetail/ProductDetailP
 import MintPage from "pages/FormPages/MintPage"
 import StakeToken from "pages/FormPages/StakeToken"
 import MyStake from "pages/TablePages/MyStake"
+import Transfer from "pages/Transfer"
 
 // Sections
 import PageHeaders from "layouts/sections/page-sections/page-headers"
@@ -97,6 +98,11 @@ const routes = [
             name: "author",
             route: "/pages/landing-pages/author",
             component: <Author />,
+          },
+          {
+            name: "transfer",
+            route: "/pages/transfer",
+            component: <Transfer />,
           },
         ],
       },
