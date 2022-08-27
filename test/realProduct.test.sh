@@ -4,7 +4,7 @@ load "../env.sh";
 identity account1 "../config/account1.pem";
 "Daction real NFT";
 "- Should create product correctly";
-let resp = call marketplaceCanister.AddOrder(
+let resp = call marketplaceCanister.AddOrder(account1,
     record {
         title="test product"; 
         tokenId=null; 
@@ -26,7 +26,7 @@ assert resp != variant { Err };
 
 identity account2 "../config/account2.pem";
 "- Should create product correctly 2";
-let resp = call marketplaceCanister.AddOrder(
+let resp = call marketplaceCanister.AddOrder(account2,
     record {
         title="test product 2"; 
         tokenId=null; 
@@ -47,7 +47,7 @@ resp;
 assert resp != variant { Err };
 
 "- Should create product correctly 2";
-let resp = call marketplaceCanister.AddOrder(
+let resp = call marketplaceCanister.AddOrder(account2,
     record {
         title="test product 3"; 
         tokenId=null; 
@@ -71,28 +71,28 @@ assert resp != variant { Err };
 "Voting";
 " - Should voting correctly 1";
 identity account2 "../config/account2.pem";
-let resp = call marketplaceCanister.VoteAuctionPending(record {auctionPendingId=1; vote=variant {Up}});
+let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=1; vote=variant {Up}});
 resp;
 
 " - Should voting correctly 2";
 identity account2 "../config/account2.pem";
-let resp = call marketplaceCanister.VoteAuctionPending(record {auctionPendingId=2; vote=variant {Up}});
+let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=2; vote=variant {Up}});
 resp;
 
 " - Should voting correctly 3";
 identity account2 "../config/account2.pem";
-let resp = call marketplaceCanister.VoteAuctionPending(record {auctionPendingId=3; vote=variant {Up}});
+let resp = call marketplaceCanister.VoteAuctionPending(account2, record {auctionPendingId=3; vote=variant {Up}});
 resp;
 
 
 "- Approve auction pending";
 identity account3 "../config/account3.pem";
-let resp = call marketplaceCanister.ApproveAuctionPending(1);
+let resp = call marketplaceCanister.ApproveAuctionPending(account3, 1);
 resp;
 
-let resp = call marketplaceCanister.ApproveAuctionPending(2);
+let resp = call marketplaceCanister.ApproveAuctionPending(account3, 2);
 resp;
 
-let resp = call marketplaceCanister.ApproveAuctionPending(3);
+let resp = call marketplaceCanister.ApproveAuctionPending(account3, 3);
 resp;
 
