@@ -87,7 +87,7 @@ module {
         startPrice: Nat;
         tokenPayment: Principal;
         auctionTime: Time.Time;
-        metadataAuction: ?MetadataAuction;
+        metadataAuction: Text;
         voteUp: Nat;
         voteDown: Nat;
         timePending: Time.Time;
@@ -121,8 +121,8 @@ module {
         auctionTime: Time.Time;
         highestBidId: Nat;
         auctionState: AuctionState;
-        typeAuction: TypeAuction;
-        metadataAuction: ?MetadataAuction;
+        typeAuction: Text;
+        metadataAuction: Text;
         isSend: Bool;
         isReceived: Bool;
         picture: ?Text;
@@ -140,16 +140,15 @@ module {
     };
 
     public type AuctionCreate = {
-        tokenId: ?Nat;
+        tokenId: Nat;
         title:Text;
         description:Text;
         stepBid: Nat;
         startPrice: Nat;
         tokenPayment: Principal;
         auctionTime: Time.Time;
-        typeAuction: TypeAuction;
-        metadataAuction: ?MetadataAuction;
-        picture: ?Text;
+        metadataAuction: Text;
+        picture: Text;
     };
 
     public type MetadataAuction = {

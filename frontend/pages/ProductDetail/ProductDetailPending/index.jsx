@@ -180,7 +180,7 @@ function ProductDetailBid() {
       }
       else {
         const principalWallet = Principal.fromText(principal)
-        const res = await marketplace_auction.VoteAuctionPending(principalWallet, {auctionPendingId: parseInt(product.Ok.product.id),vote: type})
+        const res = await marketplace_auction.VoteAuctionPending(principalWallet, parseInt(product.Ok.product.id), type)
         console.log('ressss', res)
       }
 
