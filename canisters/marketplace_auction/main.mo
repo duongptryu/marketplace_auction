@@ -29,7 +29,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 	private stable var auctionPendingIdCount: Nat = 0;
     private stable var bitIdCount: Nat = 0;
     private stable var fee = 10;
-	private stable var timePending = 8600000000;
+	private stable var timePending = 86000000000;
 
     private stable var supportedPaymentStore: [(Principal, Types.SupportPaymentResp)] = [];
     private stable var auctionStore: [(Nat, Types.Auction)] = [];
@@ -1078,7 +1078,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 	private func _automaticAcceptAuctionPending(): async () {
 		Iter.iterate(
 			idToAuctionPending.entries(),func ((tokenId: Nat, auctionPendingData: Types.AuctionPending), index: Nat) {
-				if (Time.now() <= auctionPendingData.timeStart + timePending) {
+				if (Time.now() >= auctionPendingData.timeStart + timePending) {
 					auctionIdCount += 1;
 					let id = auctionIdCount;
 
@@ -1160,8 +1160,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		auctionToVotesStore := [];
 	};
 
-	// system func heartbeat() : async () {
-	// 	await _automaticAcceptAuctionPending();
-
-	// }
+	system func heartbeat() : async () {
+		await _automaticAcceptAuctionPending();
+	}
 }
