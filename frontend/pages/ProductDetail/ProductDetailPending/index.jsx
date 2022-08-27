@@ -94,10 +94,11 @@ function ProductDetailBid() {
 
   const getProduct = async () => {
     try {
+      console.log('alo')
       const datas = await marketplace_auction.GetAAuctionPending(parseInt(params.id));
       console.log('a auction pending', datas)
       setProduct(datas);
-      getHistoryBid()
+      // getHistoryBid()
     }
     catch(e) {
       console.log('message error', e)
@@ -153,7 +154,6 @@ function ProductDetailBid() {
       const publicKey = await window.ic.plug.requestConnect();
       console.log(`The connected user's public key is:`, publicKey);
       getProduct()
-      getHistoryBid()
     } catch (e) {
       console.log(e);
     }
@@ -173,12 +173,9 @@ function ProductDetailBid() {
 
   React.useEffect(() => {
     getProduct()
-    getHistoryBid()
+    // getHistoryBid()
   }, []);
 
-  React.useEffect(() => {
-    console.log('error20', error20);
-  }, [error20]);
   return (
     <BaseLayout
       breadcrumb={[
@@ -222,7 +219,7 @@ function ProductDetailBid() {
                   <div className='card-root-image'>
                     <MKBox
                       component="img"
-                      src={product.Ok.product.picture[0]}
+                      src={product.Ok.product.picture}
                       width="100%"
                       height="400px"
                       my="auto"
