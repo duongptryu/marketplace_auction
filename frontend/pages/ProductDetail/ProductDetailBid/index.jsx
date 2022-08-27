@@ -336,7 +336,7 @@ function ProductDetailBid() {
                   </dl>
                   <div>
                     <MKBox py={3} px={3} sx={{ mx: "auto", textAlign: "center" }}>
-                      {(product.Ok.processToBid < 1) ? (
+                      {(product.Ok.product.processToBid !== 'Out of time') ? (
                         <>
                           <MKTypography color='primary' textGradient variant="body1" fontWeight="bold" mb={1}>Total wallet :
                             {assets ? getAmount(assets, product.Ok.product.currencyUnit) : 'connect Wallet'}</MKTypography>
