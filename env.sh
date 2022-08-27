@@ -2,6 +2,7 @@ let _ = "Mint DAU token 1000000";
 let account1 = principal "u4f2v-igzyj-kgr2d-ipjf5-dnkz6-sl6mm-gxues-usbeb-2bthn-pfjdq-kae";
 let account2 = principal "g27n3-ynszd-oh3rr-p3xnx-vuhl4-nufyt-xlbbw-x4fsg-5pbiv-jwbkk-7qe";
 let account3 = principal "psgm7-igfya-7g2cx-t5jgr-uxozt-fm7n6-xhepm-tvmw7-y4hpe-iq5o4-7qe";
+
 let assetCanister = principal "qhbym-qaaaa-aaaaa-aaafq-cai";
 let assetSc = record { canister_id = principal "qhbym-qaaaa-aaaaa-aaafq-cai" };
 let assetStore = record { canister_id = principal "qsgjb-riaaa-aaaaa-aaaga-cai" };
@@ -16,3 +17,4 @@ let nftSc = record { canister_id = principal "qjdve-lqaaa-aaaaa-aaaeq-cai" };
 let resp = variant { Ok = 5 : nat };
 let stakingCanister = principal "qaa6y-5yaaa-aaaaa-aaafa-cai";
 let stakingSc = record { canister_id = principal "qaa6y-5yaaa-aaaaa-aaafa-cai" };
+>>>>>>> 86c790e10f9676c6b138e2ca4831678d57b24830
