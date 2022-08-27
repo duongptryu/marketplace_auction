@@ -43,11 +43,14 @@ import routes from "routes"
 import routesHeader from "routes/routesHeader"
 //store
 import { StoreProvider, useStore, actions } from "./store"
+import { Provider as AlertProvider } from 'react-alert'
+import AlertTemplate from 'react-alert-template-basic'
 /*
  * Some examples to get you started
  */
 
 function App() {
+  
   const { pathname } = useLocation()
   const [state, dispatch] = useStore()
   // Setting page scroll to 0 when changing the route
@@ -110,13 +113,20 @@ const client = createClient({
 })
 
 console.log("marketplace_auction", marketplace_auction)
-
+const options = {
+  position: 'bottom left',
+  timeout: 5000,
+  offset: '10px',
+  transition: 'scale'
+}
 export default () => (
   <Connect2ICProvider client={client}>
     <Router>
-      <StoreProvider>
-        <App />
-      </StoreProvider>
+      <AlertProvider template={AlertTemplate} {...options}>
+        <StoreProvider>
+          <App />
+        </StoreProvider>
+      </AlertProvider>
     </Router>
   </Connect2ICProvider>
 )

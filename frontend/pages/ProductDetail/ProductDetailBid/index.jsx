@@ -24,7 +24,7 @@ import moment from 'moment';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { useBalance, useWallet, useConnect, useCanister } from "@connect2ic/react";
 import { Principal } from '@dfinity/principal';
-
+import { useAlert } from 'react-alert';
 const replaceNumber = (num) => {
   return parseInt(num);
 }
@@ -74,24 +74,27 @@ function ProductDetailBid() {
   const [inputNumToken, setInputNumToken] = React.useState('');
   const params = useParams();
   const stateMarket = canisterDefinition.canisterId;
-  console.log('stateMarket',stateMarket)
+  const alert = useAlert()
   // handle Bid
   const handleChangeInputBid = event => {
     setInputNumToken(event.target.value);
-
-    console.log('value is:', event.target.value);
   };
   // get the product
   const getProduct = async () => {
     try {
       const datas = await marketplace_auction.GetAuction(parseInt(params.id));
+      if (Object.keys(datas)[0] === 'Ok') {
+        alert.success('Get data succesfully!')
+      }
+      else {
+        alert.error('Get data unsuccesfully!')
+      }
       // lay ngay den date Line
       const a = replaceNumber(datas.Ok.product.startTime) + replaceNumber(datas.Ok.product.auctionTime);
       const strTime = parseInt(datas.Ok.product.startTime) / Math.pow(10, 6)
-      const dateLine = moment(a / 1000000) ;
-      datas.Ok.product.dateLine =dateLine.format("DD MMM YYYY hh:mm a");
+      const dateLine = moment(a / 1000000);
+      datas.Ok.product.dateLine = dateLine.format("DD MMM YYYY hh:mm a");
       const currentTime = moment();
-      // datas.Ok.product.startTime = ;
       const curTime = new Date().getTime()
       const durTime = parseInt(datas.Ok.product.auctionTime) / Math.pow(10, 6)
       const r = (curTime - strTime) / durTime
@@ -101,12 +104,15 @@ function ProductDetailBid() {
       } else {
         datas.Ok.product.processToBid = 'Out of time';
       }
-      
+
       if (dateLine > currentTime) {
-        datas.Ok.product.processBar = parseInt(r *100)
+        datas.Ok.product.processBar = parseInt(r * 100)
       } else {
         datas.Ok.product.processBar = 100
       }
+    console.log(datas.Ok.product.seller)
+    console.log('datas prd', datas);
+
       setProduct(datas);
       getHistoryBid()
     }
@@ -118,6 +124,12 @@ function ProductDetailBid() {
 
   const getHistoryBid = async () => {
     const datas = await marketplace_auction.GetBids(parseInt(params.id));
+    if (Object.keys(datas)[0] === 'Ok') {
+      alert.success('Get data succesfully!')
+    }
+    else {
+      alert.error('Get data unsuccesfully!')
+    }
     console.log('datas Bids', datas);
     setlistBids(datas)
   };
@@ -137,14 +149,11 @@ function ProductDetailBid() {
 
   const handleBid = async () => {
 
-      try {
-        const hasAllowed = await window.ic.plug.requestConnect();
-        // console.log('-->', typeof (principal))
-        if (hasAllowed) {
-          console.log('Plug wallet is connected');
-        } else {
-          console.log('Plug wallet connection was refused')
-        }
+    try {
+      const hasAllowed = await window.ic.plug.requestConnect();
+      // console.log('-->', typeof (principal))
+      if (hasAllowed) {
+        alert.success('Plug wallet is connected');
         const res = await dip20.approve(Principal.fromText(principal), Principal.fromText(stateMarket), BigInt(inputNumToken))
         console.log('mum', res);
         const biding = await marketplace_auction.BidAuction(Principal.fromText(principal), {
@@ -154,19 +163,13 @@ function ProductDetailBid() {
         console.log('biding', biding);
         getProduct()
         getHistoryBid()
+      } else {
+        alert.error('Plug wallet connection was refused')
       }
-      catch (e) {
-        console.log('error', e)
-      }
-  }
 
-  const onConnectPlug = async () => {
-    try {
-      const publicKey = await window.ic.plug.requestConnect();
-      console.log(`The connected user's public key is:`, publicKey);
-
-    } catch (e) {
-      console.log(e);
+    }
+    catch (e) {
+      console.log('error', e)
     }
   }
 
@@ -182,12 +185,12 @@ function ProductDetailBid() {
   }
 
   const handleClaimToken = async () => {
-    console.log('wallet-->', wallet)
     if (!wallet || !principal) {
-      await onConnectPlug()
-    } else {
+      alert.error('You need to login to Bit')
+    }
+    else {
       try {
-        console.log('-->', typeof (principal), Principal.fromText(principal),BigInt(product.Ok.product.id))
+        console.log('-->', typeof (principal), Principal.fromText(principal), BigInt(product.Ok.product.id))
 
         const res = await marketplace_auction.ClaimNft(Principal.fromText(principal), BigInt(3))
         console.log('res--<>', res)
@@ -200,9 +203,14 @@ function ProductDetailBid() {
   }
 
   React.useEffect(() => {
-    getProduct()
-    getHistoryBid()
-  }, [wallet]);
+    if(principal) {
+      getProduct()
+      getHistoryBid()
+    }
+    else {
+      alert.error('Need to connect wallet')
+    }
+  }, [principal]);
   return (
     <BaseLayout
       breadcrumb={[
@@ -280,7 +288,7 @@ function ProductDetailBid() {
                     </dt>
                     <dd>
                       <MKTypography color='dark' textGradient variant="inherit" mb={1}>
-                        {moment(parseInt(product.Ok.product.startTime)/1000000).format("DD MMM YYYY hh:mm a")}
+                        {moment(parseInt(product.Ok.product.startTime) / 1000000).format("DD MMM YYYY hh:mm a")}
                       </MKTypography>
                     </dd>
                     <dt>
@@ -348,12 +356,14 @@ function ProductDetailBid() {
                           </MKBox>
                         </>
                       )
-                        :
-                        (<MKButton variant="gradient" color="success" fullWidth onClick={handleClaimToken}>
-                          CLAIM
-                        </MKButton>)
+                        : (<div></div>)
                       }
-                      
+                      {(product.Ok.product.processToBid === 'Out of time' 
+                        && ((product.Ok.product.seller.toText() === principal) 
+                        || (principal === product.Ok.product.winner.toText()))) 
+                        ?  (<MKButton variant="gradient" color="success" fullWidth onClick={handleClaimToken}>CLAIM</MKButton>) 
+                        : (<div></div>)}
+
 
                     </MKBox>
                   </div>
