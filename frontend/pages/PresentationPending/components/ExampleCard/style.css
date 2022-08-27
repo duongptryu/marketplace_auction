@@ -76,6 +76,11 @@
 .card-detail {
     padding: 0px 0px 8px 15px;
     line-height: 18px;
+    display: flex;
+}
+
+.card-detail-span {
+    line-height: 36px;
 }
 
 .card-action {

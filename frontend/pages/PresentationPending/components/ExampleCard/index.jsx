@@ -10,6 +10,8 @@ import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
 import { Button, CardActionArea, CardActions } from "@mui/material"
 import "./style.css"
+import ArrowDropDownSharpIcon from '@mui/icons-material/ArrowDropDownSharp';
+import ArrowDropUpSharpIcon from '@mui/icons-material/ArrowDropUpSharp';
 import LinearProgress from "@mui/material/LinearProgress"
 
 const replaceNumber = (num) => {
@@ -30,7 +32,7 @@ function ExampleCard({ product, seller, ...rest }) {
           <CardActionArea>
             <MKBox
               component="img"
-              src={product.picture[0]}
+              src={product.picture}
               alt=""
               width="100%"
               height="160px"
@@ -56,7 +58,7 @@ function ExampleCard({ product, seller, ...rest }) {
                 <div className="card-space"></div>
                 <div className="card-action">
                   <p>
-                    <strong>{replaceNumber(product.currentPrice)}</strong>
+                    <strong>{replaceNumber(product.startPrice)}</strong>
                     {product.currencyUnit}
                     {/* <span>/$37,717.8</span> */}
                   </p>
@@ -64,23 +66,12 @@ function ExampleCard({ product, seller, ...rest }) {
               </div>
 
               <div className="card-detail">
-                <div>
-                  <MKTypography variant="span" fontWeight="bold" mb={1}>
-                    Start time: {replaceTime(product.startTime)}
-                  </MKTypography>
-                </div>
-                <div>
-                  <MKTypography variant="span" fontWeight="bold" mb={1}>
-                    Current price: {replaceNumber(product.startPrice)}
-                    {product.currencyUnit}
-                  </MKTypography>
-                </div>{" "}
-                <div>
-                  <MKTypography variant="span" fontWeight="bold" mb={1}>
-                    Deadline:{" "}
-                    {deadLineTime(product.startTime, product.auctionTime)}
-                  </MKTypography>
-                </div>
+                <ArrowDropUpSharpIcon fontSize="large" color="success"/>
+                <span className="card-detail-span">{product.voteUp.toString()}</span>
+                <ArrowDropDownSharpIcon fontSize="large" color="error"/>
+                <span className="card-detail-span">{product.voteDown.toString()}</span>
+                
+
               </div>
             </CardContent>
             <CardActions>
