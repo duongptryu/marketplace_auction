@@ -47,7 +47,36 @@ import breakpoints from "assets/theme/base/breakpoints"
 import logoDau from "assets/images/logo-dau.png"
 
 // Connect Wallet
-import { ConnectDialog } from "@connect2ic/react"
+import {
+  ConnectButton,
+  ConnectDialog,
+  Connect2ICProvider,
+} from "@connect2ic/react"
+import "@connect2ic/core/style.css"
+
+const btnStyle = {
+  margin: 0,
+  fontSize: "0.875rem",
+  fontWeight: 300,
+  lineHeight: 1.5,
+  textTransform: "uppercase",
+  letterSpacing: "0.02857em",
+  minWidth: "11.25rem",
+  padding: "5px 16px",
+  opacity: 1,
+  textTransform: "capitalize",
+  verticalAlign: "unset",
+  textDecoration: "none",
+  color: "#7b809a",
+  letterSpacing: "-0.125px",
+  fontWeight: 400,
+  borderRadius: "0.375rem",
+  cursor: "pointer",
+  transition: "all 300ms linear",
+  border: "none",
+  backgroundColor: "transparent",
+  display: "inline-flex",
+}
 
 function MyHeaderNavbar({
   transparent,
@@ -131,22 +160,24 @@ function MyHeaderNavbar({
           sx={{ cursor: "pointer", userSelect: "none" }}
         >
           {isBtn ? (
-            <MKButton
-              key={label + index + "child"}
-              variant={
-                color === "white" || color === "default"
-                  ? "contained"
-                  : "gradient"
-              }
-              color={color ? color : "info"}
-              size="small"
-              onClick={ async (event) => {
-                event.preventDefault()
-                connectBtn ? await onConnectPlug() : null
-              }}
-            >
-              {label}
-            </MKButton>
+            connectBtn ? (
+              <div className="auth-section" style={{ position: "inherit" }}>
+                <ConnectButton />
+              </div>
+            ) : (
+              <MKButton
+                key={label + index + "child"}
+                variant={
+                  color === "white" || color === "default"
+                    ? "contained"
+                    : "gradient"
+                }
+                color={color ? color : "info"}
+                size="small"
+              >
+                {label}
+              </MKButton>
+            )
           ) : (
             <MKTypography
               key={label + index + "child"}
@@ -220,7 +251,7 @@ function MyHeaderNavbar({
           {calculateColumns.map((cols, key) => {
             const gridKey = `grid-${key}`
             const dividerKey = `divider-${key}`
-
+            console.log(cols, key, "??")
             return (
               <Grid
                 key={gridKey}
@@ -228,54 +259,68 @@ function MyHeaderNavbar({
                 xs={12 / columns}
                 sx={{ position: "relative" }}
               >
-                {cols.map((col, index) => (
-                  <Fragment key={col.name}>
-                    <MKTypography
-                      display="block"
-                      variant="button"
-                      fontWeight="bold"
-                      textTransform="capitalize"
-                      py={1}
-                      px={0.5}
-                      mt={index !== 0 ? 2 : 0}
-                    >
-                      {col.name}
-                    </MKTypography>
-                    {col.collapse.map((item) => (
+                {cols.map((col, index) => {
+                  return (
+                    <Fragment key={col.name}>
                       <MKTypography
-                        key={item.name}
-                        component={item.route ? Link : MuiLink}
-                        to={item.route ? item.route : ""}
-                        href={item.href ? item.href : (e) => e.preventDefault()}
-                        target={item.href ? "_blank" : ""}
-                        rel={item.href ? "noreferrer" : "noreferrer"}
-                        minWidth="11.25rem"
                         display="block"
                         variant="button"
-                        color="text"
+                        fontWeight="bold"
                         textTransform="capitalize"
-                        fontWeight="regular"
-                        py={0.625}
-                        px={2}
-                        sx={({
-                          palette: { grey, dark },
-                          borders: { borderRadius },
-                        }) => ({
-                          borderRadius: borderRadius.md,
-                          cursor: "pointer",
-                          transition: "all 300ms linear",
-
-                          "&:hover": {
-                            backgroundColor: grey[200],
-                            color: dark.main,
-                          },
-                        })}
+                        py={1}
+                        px={0.5}
+                        mt={index !== 0 ? 2 : 0}
                       >
-                        {item.name}
+                        {col.name}
                       </MKTypography>
-                    ))}
-                  </Fragment>
-                ))}
+                      {col.collapse.map((item) =>
+                        item.name === "log out" ? (
+                          <span
+                            onClick={(e) => {
+                              setDropdown(null)
+                            }}
+                          >
+                            <ConnectButton style={btnStyle} />
+                          </span>
+                        ) : (
+                          <MKTypography
+                            key={item.name}
+                            component={item.route ? Link : MuiLink}
+                            to={item.route ? item.route : ""}
+                            href={
+                              item.href ? item.href : (e) => e.preventDefault()
+                            }
+                            target={item.href ? "_blank" : ""}
+                            rel={item.href ? "noreferrer" : "noreferrer"}
+                            minWidth="11.25rem"
+                            display="block"
+                            variant="button"
+                            color="text"
+                            textTransform="capitalize"
+                            fontWeight="regular"
+                            py={0.625}
+                            px={2}
+                            sx={({
+                              palette: { grey, dark },
+                              borders: { borderRadius },
+                            }) => ({
+                              borderRadius: borderRadius.md,
+                              cursor: "pointer",
+                              transition: "all 300ms linear",
+
+                              "&:hover": {
+                                backgroundColor: grey[200],
+                                color: dark.main,
+                              },
+                            })}
+                          >
+                            {item.name}
+                          </MKTypography>
+                        ),
+                      )}
+                    </Fragment>
+                  )
+                })}
                 {key !== 0 && (
                   <Divider
                     key={dividerKey}
@@ -333,17 +378,8 @@ function MyHeaderNavbar({
           </MKBox>
         </Grow>
       )}
-    </Popper>      
+    </Popper>
   )
-
-  const onConnectPlug = async () => {
-    try {
-      const publicKey = await window.ic.plug.requestConnect()
-      console.log(`The connected user's public key is:`, publicKey)
-    } catch (e) {
-      console.log(e)
-    }
-  }
   return (
     <Container sx={sticky ? { position: "sticky", top: 0, zIndex: 10 } : null}>
       <MKBox
