@@ -14,10 +14,10 @@ import {
 /*
  * Import canister definitions like this:
  */
-import * as dip20 from "../.dfx/local/canisters/dip20"
-import * as dip721 from "../.dfx/local/canisters/dip721"
-import * as marketplace_auction from "../.dfx/local/canisters/marketplace_auction"
-import * as staking from "canisters/staking"
+import * as dip20 from "canisters/dip20";
+import * as dip721 from "canisters/dip721";
+import * as marketplace_auction from "canisters/marketplace_auction";
+import * as staking from "canisters/staking";
 // import * as stake from "../.dfx/local/canisters/stake";
 // react-router components
 import {
@@ -54,14 +54,7 @@ function App() {
   useEffect(() => {
     document.documentElement.scrollTop = 0
     document.scrollingElement.scrollTop = 0
-    dispatch(
-      actions.setCanisters({
-        dip_20: dip20,
-        dip_721: dip20,
-        marketplace_auction: marketplace_auction,
-        staking: staking,
-      }),
-    )
+
   }, [pathname])
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
