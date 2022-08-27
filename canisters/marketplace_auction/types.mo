@@ -143,8 +143,8 @@ module {
         tokenId: ?Nat;
         title:Text;
         description:Text;
-        stepBid: Nat;
-        startPrice: Nat;
+        stepBid: Nat64;
+        startPrice: Nat64;
         tokenPayment: Principal;
         auctionTime: Time.Time;
         typeAuction: TypeAuction;

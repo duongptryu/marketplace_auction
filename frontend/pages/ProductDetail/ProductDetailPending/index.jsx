@@ -20,7 +20,6 @@ import Tab from '@mui/material/Tab';
 import './style.css';
 import bgVideo from "assets/video/top-block-bg_1.mp4";
 import humanSVG from "assets/images/shapes/person.svg";
-import Transaction from "./tabs/transaction.jsx";
 import { useCanister } from "@connect2ic/react"
 import { Route, Routes, useParams } from 'react-router-dom';
 import { useBalance, useWallet } from "@connect2ic/react";
@@ -95,20 +94,8 @@ function ProductDetailBid() {
 
   const getProduct = async () => {
     try {
-      const datas = await marketplace_auction.GetAuction(parseInt(params.id));
-      datas.Ok.product.dateLine = deadLineTime(datas.Ok.product.startTime, datas.Ok.product.auctionTime);
-      // lay ngay den date Line
-      const a = replaceNumber(datas.Ok.product.startTime) + replaceNumber(datas.Ok.product.auctionTime);
-      const b = new Date(a / 1000000);
-      const c = new Date();
-      const d = b.getDate() - c.getDate();
-      const aucTime = new Date(replaceNumber(datas.Ok.product.auctionTime) / 1000000);
-      datas.Ok.product.processToBid = d + ' day';
-      if (c > b) {
-        datas.Ok.product.processBar = 100
-      } else {
-        datas.Ok.product.processBar = (aucTime.getDate() - d) / (aucTime.getDate()) * 100
-      }
+      const datas = await marketplace_auction.GetAAuctionPending(parseInt(params.id));
+      console.log('a auction pending', datas)
       setProduct(datas);
       getHistoryBid()
     }
@@ -386,7 +373,12 @@ function ProductDetailBid() {
               </MKBox>
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <Transaction data={listBids} />
+            <MKBox py={3} px={3} sx={{ mx: "auto", textAlign: "center" }} className="box-comment">
+                <img className='img-human' src={humanSVG} alt="" />
+                <MKTypography color='primary' textGradient variant="body1" fontWeight="bold" mb={1} style={{ "alignSelf": "center" }}>
+                  Comming soon!
+                </MKTypography>
+              </MKBox>
             </TabPanel>
           </MKBox></> : null}
     </BaseLayout>

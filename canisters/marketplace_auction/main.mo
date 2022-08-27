@@ -148,9 +148,9 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				tokenId = data.tokenId;
 				seller = caller;
 				winner = Principal.fromText("2vxsx-fae");
-				stepBid = data.stepBid;
-				startPrice = data.startPrice;
-				currentPrice = data.startPrice;
+				stepBid = Nat64.toNat(data.stepBid);
+				startPrice = Nat64.toNat(data.startPrice);
+				currentPrice = Nat64.toNat(data.startPrice);
 				tokenPayment = data.tokenPayment;
 				startTime = Time.now();
 				auctionTime = data.auctionTime;
@@ -175,8 +175,8 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 			var auctionPending: Types.AuctionPending = {
 				id= auctionPendingIdCount;
 				seller = caller;
-				stepBid = data.stepBid;
-				startPrice = data.startPrice;
+				stepBid = Nat64.toNat(data.stepBid);
+				startPrice = Nat64.toNat(data.startPrice);
 				tokenPayment = data.tokenPayment;
 				auctionTime = data.auctionTime;
 				metadataAuction = data.metadataAuction;
@@ -1070,35 +1070,40 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
             case (?x_) { x_ };
     };
 
-	private func _automaticAcceptAuctionPending(auctionPendingData: Types.AuctionPending): async () {
-				auctionIdCount += 1;
-				let id = auctionIdCount;
+	private func _automaticAcceptAuctionPending(): async () {
+		Iter.iterate(
+			idToAuctionPending.entries(),func ((tokenId: Nat, auctionPendingData: Types.AuctionPending), index: Nat) {
+				if (Time.now() <= auctionPendingData.timeStart + timePending) {
+					auctionIdCount += 1;
+					let id = auctionIdCount;
 
-				let auction: Types.Auction = {
-					id = auctionIdCount;
-					tokenId = null;
-					seller = auctionPendingData.seller;
-					winner = Principal.fromText("2vxsx-fae");
-					stepBid = auctionPendingData.stepBid;
-					currentPrice = auctionPendingData.startPrice;	
-					startPrice = auctionPendingData.startPrice;
-					tokenPayment = auctionPendingData.tokenPayment;
-					startTime = Time.now();
-					auctionTime = auctionPendingData.auctionTime;
-					highestBidId = 0;
-					auctionState = #AuctionStarted;
-					metadataAuction = auctionPendingData.metadataAuction;
-					isSend= false;
-					isReceived= false;
-					typeAuction = #AuctionRealProduct;
-					picture = ?auctionPendingData.picture;
-					currencyUnit=auctionPendingData.currencyUnit;
-					title=auctionPendingData.title;
-					description=auctionPendingData.description;
-				};
-				idToAuction.put(id, auction);
-				auctionToBids.put(auctionIdCount, HashMap.fromIter<Nat, Types.Bid>(Iter.fromArray([]), 1, Nat.equal, Hash.hash));
-				idToAuctionPending.delete(auctionPendingData.id);
+					let auction: Types.Auction = {
+						id = auctionIdCount;
+						tokenId = null;
+						seller = auctionPendingData.seller;
+						winner = Principal.fromText("2vxsx-fae");
+						stepBid = auctionPendingData.stepBid;
+						currentPrice = auctionPendingData.startPrice;	
+						startPrice = auctionPendingData.startPrice;
+						tokenPayment = auctionPendingData.tokenPayment;
+						startTime = Time.now();
+						auctionTime = auctionPendingData.auctionTime;
+						highestBidId = 0;
+						auctionState = #AuctionStarted;
+						metadataAuction = auctionPendingData.metadataAuction;
+						isSend= false;
+						isReceived= false;
+						typeAuction = #AuctionRealProduct;
+						picture = ?auctionPendingData.picture;
+						currencyUnit=auctionPendingData.currencyUnit;
+						title=auctionPendingData.title;
+						description=auctionPendingData.description;
+					};
+					idToAuction.put(id, auction);
+					auctionToBids.put(auctionIdCount, HashMap.fromIter<Nat, Types.Bid>(Iter.fromArray([]), 1, Nat.equal, Hash.hash));
+					idToAuctionPending.delete(auctionPendingData.id);
+				}
+			});
 	};
 
     system func preupgrade() {
@@ -1150,12 +1155,8 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 		auctionToVotesStore := [];
 	};
 
-	// system func heartbeat() : async () {
-	// 	Iter.iterate(
-	// 		idToAuctionPending.entries(),func ((tokenId: Nat, pendingAution: Types.AuctionPending)) {
-	// 			if (Time.now() <= pendingAution.timeStart + pendingAution.auctionTime) {
-	// 				await _automaticAcceptAuctionPending(pendingAution);
-	// 			}
-	// 	});
-	// }
+	system func heartbeat() : async () {
+		await _automaticAcceptAuctionPending();
+
+	}
 }

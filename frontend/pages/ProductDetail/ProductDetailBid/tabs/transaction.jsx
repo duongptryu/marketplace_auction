@@ -39,7 +39,6 @@ function CustomizedTables({ data, principal, product }) {
   const settingData = () => {
     console.log('principal=>>>', principal);
     console.log('product=>>>', product);
-    console.log('data=>>>', data, (Object.keys(data[3].status)));
     console.log((product.highestBidId).toString())
   }
   const handleClaim = async (IdBid) => {
@@ -84,7 +83,7 @@ function CustomizedTables({ data, principal, product }) {
                   <MKButton onClick={() =>
                     handleClaim(row.id)}>Claim</MKButton>
                   :
-                  <><div>-</div> </>
+                  <div>-</div>
                 }
               </StyledTableCell>
             </StyledTableRow>

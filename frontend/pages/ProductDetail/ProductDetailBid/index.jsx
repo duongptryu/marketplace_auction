@@ -21,14 +21,9 @@ import bgVideo from "assets/video/top-block-bg_1.mp4";
 import humanSVG from "assets/images/shapes/person.svg";
 import Transaction from "./tabs/transaction.jsx";
 import moment from 'moment';
-import { useCanister } from "@connect2ic/react"
 import { Route, Routes, useParams } from 'react-router-dom';
-import { useBalance, useWallet } from "@connect2ic/react";
+import { useBalance, useWallet, useConnect, useCanister } from "@connect2ic/react";
 import { Principal } from '@dfinity/principal';
-// import { Nat } from "@dfinity/nat"
-import { useStore } from '../../../store';
-import { useConnect } from '@connect2ic/react';
-import { useEffect } from 'react';
 
 const replaceNumber = (num) => {
   return parseInt(num);
@@ -78,38 +73,37 @@ function ProductDetailBid() {
   const [assets] = useBalance()
   const [inputNumToken, setInputNumToken] = React.useState('');
   const params = useParams();
-  const [state, dispatch] = useStore()
   const stateMarket = canisterDefinition.canisterId;
   console.log('stateMarket',stateMarket)
+  // handle Bid
   const handleChangeInputBid = event => {
     setInputNumToken(event.target.value);
 
     console.log('value is:', event.target.value);
   };
-
+  // get the product
   const getProduct = async () => {
     try {
       const datas = await marketplace_auction.GetAuction(parseInt(params.id));
       // lay ngay den date Line
       const a = replaceNumber(datas.Ok.product.startTime) + replaceNumber(datas.Ok.product.auctionTime);
       const strTime = parseInt(datas.Ok.product.startTime) / Math.pow(10, 6)
-      
       const dateLine = moment(a / 1000000) ;
       datas.Ok.product.dateLine =dateLine.format("DD MMM YYYY hh:mm a");
       const currentTime = moment();
-      datas.Ok.product.startTime = moment(parseInt(datas.Ok.product.startTime)/1000000).format("DD MMM YYYY hh:mm a");
+      // datas.Ok.product.startTime = ;
       const curTime = new Date().getTime()
       const durTime = parseInt(datas.Ok.product.auctionTime) / Math.pow(10, 6)
       const r = (curTime - strTime) / durTime
 
       if (parseInt(dateLine.diff(currentTime, 'seconds')) > 0) {
-        datas.Ok.product.processToBid = parseInt(dateLine.diff(currentTime, 'seconds')) + 'seconds';
+        datas.Ok.product.processToBid = parseInt(dateLine.diff(currentTime, 'seconds')) + ' seconds';
       } else {
         datas.Ok.product.processToBid = 'Out of time';
       }
-
+      
       if (dateLine > currentTime) {
-        datas.Ok.product.processBar = parseInt(r) *100
+        datas.Ok.product.processBar = parseInt(r *100)
       } else {
         datas.Ok.product.processBar = 100
       }
@@ -143,13 +137,15 @@ function ProductDetailBid() {
 
   const handleBid = async () => {
 
-    if (!wallet) {
-      await onConnectPlug()
-    }
-    else {
       try {
+        const hasAllowed = await window.ic.plug.requestConnect();
         // console.log('-->', typeof (principal))
-        const res = await dip20.approve(Principal.fromText("hujs2-qmric-qgft4-ts5qp-anato-nrfh3-w42u6-y5zl6-kh2iv-yfer7-fae"), Principal.fromText(stateMarket), BigInt(inputNumToken))
+        if (hasAllowed) {
+          console.log('Plug wallet is connected');
+        } else {
+          console.log('Plug wallet connection was refused')
+        }
+        const res = await dip20.approve(Principal.fromText(principal), Principal.fromText(stateMarket), BigInt(inputNumToken))
         console.log('mum', res);
         const biding = await marketplace_auction.BidAuction(Principal.fromText(principal), {
           auctionId: 2,
@@ -162,13 +158,11 @@ function ProductDetailBid() {
       catch (e) {
         console.log('error', e)
       }
-    }
   }
 
   const onConnectPlug = async () => {
     try {
       const publicKey = await window.ic.plug.requestConnect();
-      console.log('wallet-->', wallet);
       console.log(`The connected user's public key is:`, publicKey);
 
     } catch (e) {
@@ -286,7 +280,7 @@ function ProductDetailBid() {
                     </dt>
                     <dd>
                       <MKTypography color='dark' textGradient variant="inherit" mb={1}>
-                        {product.Ok.product.startTime}
+                        {moment(parseInt(product.Ok.product.startTime)/1000000).format("DD MMM YYYY hh:mm a")}
                       </MKTypography>
                     </dd>
                     <dt>
@@ -342,7 +336,7 @@ function ProductDetailBid() {
                   </dl>
                   <div>
                     <MKBox py={3} px={3} sx={{ mx: "auto", textAlign: "center" }}>
-                      {(product.Ok.processToBid < 1) ? (
+                      {(product.Ok.product.processToBid !== 'Out of time') ? (
                         <>
                           <MKTypography color='primary' textGradient variant="body1" fontWeight="bold" mb={1}>Total wallet :
                             {assets ? getAmount(assets, product.Ok.product.currencyUnit) : 'connect Wallet'}</MKTypography>
@@ -359,6 +353,7 @@ function ProductDetailBid() {
                           CLAIM
                         </MKButton>)
                       }
+                      
 
                     </MKBox>
                   </div>
