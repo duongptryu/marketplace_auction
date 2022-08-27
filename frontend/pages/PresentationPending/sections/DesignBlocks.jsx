@@ -25,11 +25,9 @@ import MKBox from "components/MKBox"
 import MKTypography from "components/MKTypography"
 
 // Presentation page components
-import ExampleCard from "pages/Presentation/components/ExampleCard"
+import ExampleCard from "pages/PresentationPending/components/ExampleCard"
 import PropTypes from "prop-types"
 
-// Data
-import data from "pages/Presentation/sections/data/designBlocksData"
 function DesignBlocks({ dataApi }) {
   const renderData = (
     <div container spacing={3} sx={{ mb: 10 }}>
@@ -37,7 +35,7 @@ function DesignBlocks({ dataApi }) {
         {dataApi.map((item, index) => (
           <Grid item xs={12} md={4} sx={{ mb: 2 }} key={index}>
             <Link
-              to={"/pages/detailProduct/ProductDetailBid/" + item.product.id}
+              to={"/pages/detailProduct/ProductDetailPending/" + item.product.id}
             >
               <ExampleCard product={item.product} seller={item.seller} />
             </Link>

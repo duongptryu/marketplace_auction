@@ -30,13 +30,13 @@ import DauHeader from "components/Molecules/layouts/Header"
 import FilledInfoCard from "examples/Cards/InfoCards/FilledInfoCard"
 // Presentation page sections
 import Information from "pages/Presentation/sections/Information"
-import DesignBlocks from "pages/Presentation/sections/DesignBlocks"
-import Pages from "pages/Presentation/sections/Pages"
-import Testimonials from "pages/Presentation/sections/Testimonials"
-import Download from "pages/Presentation/sections/Download"
+import DesignBlocks from "pages/PresentationPending/sections/DesignBlocks"
+import Pages from "pages/PresentationPending/sections/Pages"
+import Testimonials from "pages/PresentationPending/sections/Testimonials"
+import Download from "pages/PresentationPending/sections/Download"
 
 // Presentation page components
-import BuiltByDevelopers from "pages/Presentation/components/BuiltByDevelopers"
+import BuiltByDevelopers from "pages/PresentationPending/components/BuiltByDevelopers"
 
 // Routes
 import routes from "routes"

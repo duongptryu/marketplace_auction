@@ -48,6 +48,7 @@ import ContactUs from "layouts/pages/landing-pages/contact-us"
 import Author from "layouts/pages/landing-pages/author"
 import SignIn from "layouts/pages/authentication/sign-in"
 import ProductDetailBid from "../frontend/pages/ProductDetail/ProductDetailBid/index"
+import ProductDetailPending from "../frontend/pages/ProductDetail/ProductDetailPending/index"
 import MintPage from "pages/FormPages/MintPage"
 import StakeToken from "pages/FormPages/StakeToken"
 import MyStake from "pages/TablePages/MyStake"
@@ -248,7 +249,12 @@ const routes = [
       {
         name: "detail product bid",
         route: "/pages/detailProduct/ProductDetailBid/:id",
-        component: <ProductDetailBid />,
+        component: <ProductDetailBid />,ProductDetailPending
+      },
+      {
+        name: "detail product pending",
+        route: "/pages/detailProduct/ProductDetailPending/:id",
+        component: <ProductDetailPending />,
       },
       {
         name: "mint collections",
