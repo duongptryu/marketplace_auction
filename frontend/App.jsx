@@ -35,6 +35,7 @@ import CssBaseline from "@mui/material/CssBaseline"
 // Material Kit 2 React themes
 import theme from "assets/theme"
 import Presentation from "layouts/pages/presentation"
+import PresentationPending from "layouts/pages/presentationPending"
 import Test from "./test"
 
 // Material Kit 2 React routes
@@ -90,6 +91,8 @@ function App() {
         {getRoutes(routesHeader.isLogout)}
         <Route path="/test" element={<Test />} />
         <Route path="/presentation" element={<Presentation />} />
+        <Route path="/presentation-pending" element={<PresentationPending />} />
+
         <Route path="*" element={<Navigate to="/presentation" />} />
       </Routes>
     </ThemeProvider>
