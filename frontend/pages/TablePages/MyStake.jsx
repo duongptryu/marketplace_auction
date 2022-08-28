@@ -21,8 +21,8 @@ const convertData = (data, subData) => {
       ),
       endTime: moment(
         (parseInt(item.timePoint) + parseInt(packageData.lockTime)) /
-          Math.pow(10, 6).format("MMMM Do YYYY, h:mm:ss a"),
-      ),
+          Math.pow(10, 6),
+      ).format("MMMM Do YYYY, h:mm:ss a"),
     }
   })
 }
