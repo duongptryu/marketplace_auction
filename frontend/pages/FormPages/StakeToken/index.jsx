@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react"
 
+import CircularProgress from "@mui/material/CircularProgress"
+
 import DauHeader from "components/Molecules/layouts/Header"
 import StakeForm from "components/Molecules/layouts/Form/StakeForm"
 import BaseLayout from "layouts/sections/components/BaseLayout"
-
+import MKBox from "components/MKBox"
 import Container from "@mui/material/Container"
 import { useCanister, useConnect } from "@connect2ic/react"
-
+import { ProcessingStep } from "components/Molecules/layouts/Form/PublicStep"
 import { ContactlessOutlined } from "@mui/icons-material"
 
 import { Principal } from "@dfinity/principal"
@@ -87,14 +89,16 @@ function StakeToken() {
       ]}
       title=""
     >
-      {data ? (
+      {data && data.length ? (
         <StakeForm
           dataItems={data}
           action={uploadStakingPackage}
           resAction={dataStake}
           setResAction={setDataStake}
         />
-      ) : null}
+      ) : (
+        <ProcessingStep values={{}} totalSteps={1} />
+      )}
     </BaseLayout>
   )
 }
