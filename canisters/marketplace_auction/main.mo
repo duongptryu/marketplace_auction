@@ -502,7 +502,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				if (auction.typeAuction != "NFT") {
 					return #Err(#CannotClaimRealProduct);
 				};
-				if (auction.auctionTime + auction.startTime > Time.now()) {
+				if (auction.auctionTime + auction.startTime < Time.now()) {
 					return #Err(#TimeAuctionNotEnd);
 				};
 				if (not Principal.isAnonymous(auction.winner)) {
