@@ -46,9 +46,9 @@ const routesHeader = {
     },
     {
       type: "internal",
-      route: "/product-r/create",
+      route: "/product/create-real",
       component: <CreateRealProduct />,
-      label: "New request",
+      label: "Add product",
       color: "info",
       isBtn: false,
       connectBtn: false,
@@ -76,10 +76,14 @@ const routesHeader = {
     {
       label: "All products",
       color: "secondary",
+      route: "/presentation",
+      component: <></>,
     },
     {
       label: "Pending products",
       color: "secondary",
+      route: "/presentation-pending",
+      component: <></>,
     },
   ],
 }
