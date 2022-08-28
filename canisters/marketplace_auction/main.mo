@@ -417,7 +417,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				return #Err(#AuctionNotExist);
 			};
 			case (?auction) {
-				if (auction.auctionTime + auction.startTime > Time.now()) {
+				if (auction.auctionTime + auction.startTime < Time.now()) {
 					return #Err(#TimeBidIsExpired);
 				};
 				if (auction.highestBidId > 0) {
