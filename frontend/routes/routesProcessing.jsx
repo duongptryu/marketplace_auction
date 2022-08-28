@@ -15,6 +15,12 @@ const routesDefault = {
     { label: "Processing", status: "new" },
     { label: "Success", status: "new" },
   ],
+  createNftProduct: [
+    { label: "Basic Information", status: "pending" },
+    { label: "Select Collect", status: "new" },
+    { label: "Processing", status: "new" },
+    { label: "Success", status: "new" },
+  ],
   functions: {
     nextStep: (currentProgress) => {
       let progress = [...currentProgress].map((ele) => {

@@ -41,10 +41,10 @@ function CreateNftProduct() {
     mode: "anonymous",
   })
   const { principal } = useConnect()
-  const stateMarket = canisterDefinition.canisterId;
-  
-  const totalSteps = defaultRoutes.createRealProduct.length
-  const [progress, setProgress] = useState(defaultRoutes.createRealProduct)
+  const stateMarket = canisterDefinition.canisterId
+
+  const totalSteps = defaultRoutes.createNftProduct.length
+  const [progress, setProgress] = useState(defaultRoutes.createNftProduct)
   const [values, setValues] = useState({
     s1: {
       title: "",
@@ -58,6 +58,7 @@ function CreateNftProduct() {
   const [dataCreate, setDataCreate] = useState()
   const [isError, setIsError] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const handleNextStep = () => {
     const nextProgress = defaultRoutes.functions.nextStep(progress)
@@ -98,7 +99,6 @@ function CreateNftProduct() {
         )
       }
     } catch (error) {
-      console.log(error)
       setValues((currentValues) => {
         return {
           ...currentValues,
@@ -107,6 +107,7 @@ function CreateNftProduct() {
       })
       handleErrorStep()
       setIsError(true)
+      setErrorMessage("Server Error")
     }
   }
 
@@ -124,6 +125,7 @@ function CreateNftProduct() {
       } else {
         handleErrorStep()
         setIsError(true)
+        setErrorMessage(Object.keys(dataCreate.Err)[0])
       }
     }
   }, [dataCreate])
@@ -151,7 +153,12 @@ function CreateNftProduct() {
         setDataAction={setDataCreate}
       />
       <ProcessingStep values={values} totalSteps={totalSteps} />
-      <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
+      <ErrorStep
+        values={values}
+        totalSteps={totalSteps}
+        error={isError}
+        errorMessage={errorMessage}
+      />
       <SuccessStep
         values={values}
         totalSteps={totalSteps}

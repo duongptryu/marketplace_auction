@@ -54,6 +54,7 @@ function CreateRealProduct() {
   const [dataCreate, setDataCreate] = useState()
   const [isError, setIsError] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const handleNextStep = () => {
     const nextProgress = defaultRoutes.functions.nextStep(progress)
@@ -103,6 +104,7 @@ function CreateRealProduct() {
       })
       handleErrorStep()
       setIsError(true)
+      setErrorMessage("Server Error")
     }
   }
 
@@ -120,6 +122,7 @@ function CreateRealProduct() {
       } else {
         handleErrorStep()
         setIsError(true)
+        setErrorMessage(Object.keys(dataCreate.Err)[0])
       }
     }
   }, [dataCreate])
@@ -147,7 +150,12 @@ function CreateRealProduct() {
         setDataAction={setDataCreate}
       />
       <ProcessingStep values={values} totalSteps={totalSteps} />
-      <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
+      <ErrorStep
+        values={values}
+        totalSteps={totalSteps}
+        error={isError}
+        errorMessage={errorMessage}
+      />
       <SuccessStep
         values={values}
         totalSteps={totalSteps}

@@ -48,7 +48,7 @@ const routesHeader = {
       type: "internal",
       route: "/product/create-real",
       component: <CreateRealProduct />,
-      label: "New request",
+      label: "Add product",
       color: "info",
       isBtn: false,
       connectBtn: false,

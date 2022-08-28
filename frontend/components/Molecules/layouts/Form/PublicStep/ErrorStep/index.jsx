@@ -21,7 +21,7 @@ import ReportIcon from "@mui/icons-material/Report"
 // Import Image
 import defaultAvatar from "assets/images/default-avatar.png"
 
-function ErrorStep({ values, totalSteps, error }) {
+function ErrorStep({ values, totalSteps, error, errorMessage }) {
   return Object.keys(values).length === totalSteps && error ? (
     <MKBox
       component="section"
@@ -35,6 +35,9 @@ function ErrorStep({ values, totalSteps, error }) {
         <ReportIcon sx={{ fontSize: "150px !important" }} />
         <MKTypography variant="h4" color="error">
           Something Error!!!
+        </MKTypography>
+        <MKTypography variant="subtitle" color="error">
+          Message: {errorMessage}
         </MKTypography>
         <Grid container justifyContent="center" mt={4}>
           <Grid item xs={3} mx={2}>
