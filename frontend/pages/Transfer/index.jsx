@@ -21,19 +21,22 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
+import { useAlert } from 'react-alert';
 
 function Transfer() {
-    const [marketplace_auction, { canisterDefinition }] = useCanister("marketplace_auction", { mode: 'anonymous' })
+    const [dip721, { canisterDefinition }] = useCanister("dip721", { mode: 'anonymous' })
     const [dip20, { loading20, error20 }] = useCanister("dip20", { mode: 'anonymous' })
     const { principal } = useConnect()
     const [value, setValue] = React.useState(0);
     const [product, setProduct] = React.useState(undefined);
-    const [listBids, setlistBids] = React.useState(undefined);
+    const [listMyNft, setListMyNft] = React.useState(undefined);
     const [wallet] = useWallet()
+    const [nft,setNft] = React.useState(undefined);
     const [inputWalletClient, setInputWalletClient] = React.useState('');
     const [inputWalletUser, setInputWalletUser] = React.useState('');
     const params = useParams();
     const stateMarket = canisterDefinition.canisterId;
+    const alert = useAlert()
     console.log('stateMarket', stateMarket)
     // handle Bid
     const handleChangeInputWalletClient = event => {
@@ -57,64 +60,39 @@ function Transfer() {
         zIndex: "-1"
     };
 
-    const handleBid = async () => {
+    const getMyToken = async () => {
 
         try {
-            const hasAllowed = await window.ic.plug.requestConnect();
-            // console.log('-->', typeof (principal))
-            if (hasAllowed) {
-                console.log('Plug wallet is connected');
-            } else {
-                console.log('Plug wallet connection was refused')
-            }
-            const res = await dip20.approve(Principal.fromText(principal), Principal.fromText(stateMarket), BigInt(inputNumToken))
-            console.log('mum', res);
-            const biding = await marketplace_auction.BidAuction(Principal.fromText(principal), {
-                auctionId: 2,
-                amount: BigInt(inputNumToken),
-            })
-            console.log('biding', biding);
-            getProduct()
-            getHistoryBid()
+            console.log('principal',principal)        
+
+            const res = await dip721.getMyNfts(Principal.fromText(principal))
+            setListMyNft(res);
+            setInputWalletUser(principal)
+            console.log('res',res)        
         }
         catch (e) {
             console.log('error', e)
         }
     }
 
-
-    const getAmount = (amountt, unitt) => {
-        let amountToken = ' 0';
-        amountToken = amountt.filter(e => e.symbol === unitt)
-        if (amountToken.length > 0) {
-            amountToken = amountToken[0].amount
-        } else {
-            amountToken = ' 0'
+    const handleTransfer = async () => {
+        try {
+            const res = await dip721.transfer(Principal.fromText(principal),nft, Principal.fromText(inputWalletUser))
         }
-        return amountToken + ' ' + unitt
+        catch(e) {
+            console.log('error', e)
+        }
     }
 
-    const handleClaimToken = async () => {
-        console.log('wallet-->', wallet)
-        if (!wallet || !principal) {
-            await onConnectPlug()
-        } else {
-            try {
-                console.log('-->', typeof (principal), Principal.fromText(principal), BigInt(product.Ok.product.id))
 
-                const res = await marketplace_auction.ClaimNft(Principal.fromText(principal), BigInt(3))
-                console.log('res--<>', res)
-            }
-            catch (e) {
-                console.log('err', e)
-            }
+    React.useEffect(() => {
+        if(principal) {
+            getMyToken()
         }
-
-    }
-
-    // React.useEffect(() => {
-
-    // }, []);
+        else {
+            alert.error('Connect wallet please!')
+        }
+    }, [principal]);
     return (
         <BaseLayout
             breadcrumb={[
@@ -152,16 +130,10 @@ function Transfer() {
                                     Your Collections
                                 </InputLabel>
                                 <NativeSelect
-                                    defaultValue={0}
-                                    inputProps={{
-                                        name: 'age',
-                                        id: 'uncontrolled-native',
-                                    }}
+                                    onChange={setNft}
                                 >
 
-                                    <option value={10}>Ten</option>
-                                    <option value={20}>Twenty</option>
-                                    <option value={30}>Thirty</option>
+                                  {listMyNft.map((e, index) => <option value={e.id.toString}>{e.name}</option>)}
                                 </NativeSelect>
                                 <br></br>
                                 <MKInput label="Your wallet" value={inputWalletUser} onChange={handleChangeWalletUser} fullWidth></MKInput>
@@ -169,7 +141,7 @@ function Transfer() {
 
                                 <MKInput label="Wallet recevie" value={inputWalletClient} onChange={handleChangeInputWalletClient} fullWidth></MKInput>
                                 <br></br>                                <br></br>
-                                <MKButton variant="gradient" color="info" size="large">Transfer </MKButton>
+                                <MKButton variant="gradient" color="info" size="large" onClick={handleTransfer}>Transfer </MKButton>
                             </FormControl>
                         </Box>
                     </Grid>
