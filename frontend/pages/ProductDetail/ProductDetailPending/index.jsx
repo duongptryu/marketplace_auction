@@ -27,6 +27,8 @@ import { Principal } from '@dfinity/principal'
 // import { Nat } from "@dfinity/nat"
 import { useStore } from '../../../store';
 import { useConnect } from '@connect2ic/react';
+import { useAlert } from 'react-alert';
+
 import moment from 'moment';
 
 const replaceNumber = (num) => {
@@ -161,16 +163,6 @@ function ProductDetailBid() {
     }
   }
 
-  const getAmount = (amountt, unitt) => {
-    let amountToken = ' 0';
-    amountToken = amountt.filter(e => e.symbol === unitt)
-    if (amountToken.length > 0) {
-      amountToken = amountToken[0].amount
-    } else {
-      amountToken = ' 0'
-    }
-    return amountToken + ' ' + unitt
-  }
 
   const handleVote = async (type) => {
     try {
@@ -181,6 +173,13 @@ function ProductDetailBid() {
       else {
         const principalWallet = Principal.fromText(principal)
         const res = await marketplace_auction.VoteAuctionPending(principalWallet, parseInt(product.Ok.product.id), type)
+        if (Object.keys(datas)[0] === 'Ok') {
+          alert.success('Vote  succesfully!')
+        }
+        else {
+          alert.error('Vote unsuccesfully!')
+        }
+        getProduct();
         console.log('ressss', res)
       }
 
@@ -301,11 +300,11 @@ function ProductDetailBid() {
                   <div>
                     <MKBox py={3} px={3} sx={{ mx: "auto", textAlign: "center" }}>
                       <MKButton variant="gradient" color="success" fullWidth onClick={() =>handleVote('Up')}>
-                        Up
+                        Up ({product.Ok.product.voteUp})
                       </MKButton>
                       <MKBox py={3} sx={{ mx: "auto", textAlign: "center" }}>
                         <MKButton variant="gradient" color="error" fullWidth onClick={() =>handleVote('Down')}>
-                          Down
+                          Down ({product.Ok.product.voteDown})
                         </MKButton>
                       </MKBox>
                     </MKBox>
