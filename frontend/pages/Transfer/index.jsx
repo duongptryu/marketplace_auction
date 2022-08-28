@@ -152,7 +152,7 @@ function Transfer() {
                                     Your Collections
                                 </InputLabel>
                                 <NativeSelect
-                                    defaultValue={30}
+                                    defaultValue={0}
                                     inputProps={{
                                         name: 'age',
                                         id: 'uncontrolled-native',
