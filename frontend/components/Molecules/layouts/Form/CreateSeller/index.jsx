@@ -18,7 +18,8 @@ import FacebookIcon from "@mui/icons-material/Facebook"
 import InstagramIcon from "@mui/icons-material/Instagram"
 
 // Import Image
-import defaultAvatar from "assets/images/default-avatar.png"
+const defaultAvatar =
+  "https://images.squarespace-cdn.com/content/v1/54b7b93ce4b0a3e130d5d232/1519986430884-H1GYNRLHN0VFRF6W5TAN/icon.png?format=500w"
 
 function Seller({ onNextStep, values, setValues, action, setDataAction }) {
   const hiddenAvatarInput = useRef(null)

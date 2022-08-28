@@ -19,7 +19,6 @@ import InstagramIcon from "@mui/icons-material/Instagram"
 import ReportIcon from "@mui/icons-material/Report"
 
 // Import Image
-import defaultAvatar from "assets/images/default-avatar.png"
 import { Link } from "react-router-dom"
 
 function ErrorStep({

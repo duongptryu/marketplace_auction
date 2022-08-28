@@ -90,7 +90,7 @@ function Presentation() {
         }}
       >
         <video style={videoTag} autoPlay loop muted>
-          <source src={bgVideo} type="video/mp4" />
+          <source src={"https://bafybeigwkb2vyhj2crupoxgdmcst7gqoyw72bwx22gb7eln5iiacnxbm7m.ipfs.w3s.link/top-block-bg.mp4"} type="video/mp4" />
         </video>
         <Container>
           <Grid container item xs={12} lg={7} justifyContent="center" mx="auto">

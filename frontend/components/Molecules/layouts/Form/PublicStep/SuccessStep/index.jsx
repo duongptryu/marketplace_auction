@@ -19,7 +19,6 @@ import InstagramIcon from "@mui/icons-material/Instagram"
 import DoneAllIcon from "@mui/icons-material/DoneAll"
 
 // Import Image
-import defaultAvatar from "assets/images/default-avatar.png"
 import { Link } from "react-router-dom"
 
 function SuccessStep({ values, totalSteps, success, routeOk }) {

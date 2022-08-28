@@ -1,5 +1,5 @@
 .card-content {
-    background: url(../../../../assets/images/examples/card-bg.png) no-repeat center hsla(0, 0%, 100%, .6);
+    background: url('https://bafybeigx5pmztm4seznlo5bg6y74a6knhfrunbjbz2e7xogdekqti2rjke.ipfs.w3s.link/card-bg.png') no-repeat center hsla(0, 0%, 100%, .6);
     background-size: 150% auto;
     position: relative;
     z-index: 10;
@@ -155,7 +155,7 @@
 }
 
 .dl-list {
-    grid-template-columns: repeat(2,auto);
+    grid-template-columns: repeat(2, auto);
     display: grid;
     grid-gap: calc(0.25rem * 1.5);
     align-content: center;

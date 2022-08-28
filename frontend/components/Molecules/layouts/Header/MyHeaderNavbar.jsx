@@ -44,7 +44,6 @@ import MyNavbarDropdown from "./MyNavbarDropdown"
 import breakpoints from "assets/theme/base/breakpoints"
 
 // Images
-import logoDau from "assets/images/logo-dau.png"
 
 // Connect Wallet
 import {
@@ -413,7 +412,13 @@ function MyHeaderNavbar({
             lineHeight={1}
             pr={{ xs: 0, lg: 1 }}
           >
-            <MKAvatar src={logoDau} alt="logo-dau" size="xl" />
+            <MKAvatar
+              src={
+                "https://bafybeieavlfu6k2tvt4q5rsfaoitplmdfltzepzqfxlhvgwgs74ntlwpze.ipfs.w3s.link/logo-dau.png"
+              }
+              alt="logo-dau"
+              size="xl"
+            />
           </MKBox>
           <MKBox
             component={Link}

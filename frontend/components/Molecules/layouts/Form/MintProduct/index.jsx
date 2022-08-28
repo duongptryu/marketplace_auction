@@ -18,7 +18,6 @@ import FacebookIcon from "@mui/icons-material/Facebook"
 import InstagramIcon from "@mui/icons-material/Instagram"
 
 // Import Image
-import defaultAvatar from "assets/images/default-avatar.png"
 
 function MintProduct({ onNextStep, values, setValues, action, setDataAction }) {
   const formik = useFormik({

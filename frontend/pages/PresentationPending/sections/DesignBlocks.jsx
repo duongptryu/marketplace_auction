@@ -65,10 +65,10 @@ function DesignBlocks({ dataApi }) {
             sx={{ mb: 2 }}
           /> */}
           <MKTypography variant="h2" fontWeight="bold">
-            Products on auction
+            Products on Pending Auction
           </MKTypography>
           <MKTypography variant="body1" color="text">
-            Below are the products being auctioned on the current floor
+            Below are the products being auctioned on the pending floor
           </MKTypography>
         </Grid>
       </Container>

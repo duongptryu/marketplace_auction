@@ -28,7 +28,8 @@ import MKBox from "components/MKBox"
 import MKAvatar from "components/MKAvatar"
 
 // Image
-import team1 from "assets/images/team-1.jpg"
+const team1 =
+  "https://i1.sndcdn.com/artworks-ye4tNwSsaCx1HRaN-5zOqzw-t500x500.jpg"
 
 function MyNavbarDropdown({
   name,

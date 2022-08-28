@@ -19,7 +19,6 @@ import FacebookIcon from "@mui/icons-material/Facebook"
 import InstagramIcon from "@mui/icons-material/Instagram"
 
 // Import Image
-import defaultAvatar from "assets/images/default-avatar.png"
 
 function ProcessingStep({ values, totalSteps }) {
   return Object.keys(values).length === totalSteps - 1 ? (

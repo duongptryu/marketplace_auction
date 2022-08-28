@@ -22,7 +22,6 @@ import FacebookIcon from "@mui/icons-material/Facebook"
 import InstagramIcon from "@mui/icons-material/Instagram"
 
 // Import Image
-import defaultAvatar from "assets/images/default-avatar.png"
 
 // Import Web3-Storage
 import { useCanister, useConnect } from "@connect2ic/react"
