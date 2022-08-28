@@ -10,6 +10,7 @@ import Container from "@mui/material/Container"
 import { useCanister, useConnect } from "@connect2ic/react"
 import { ProcessingStep } from "components/Molecules/layouts/Form/PublicStep"
 import { ContactlessOutlined } from "@mui/icons-material"
+import { useAlert } from "react-alert"
 
 import { Principal } from "@dfinity/principal"
 
@@ -39,6 +40,7 @@ function StakeToken() {
   const [data, setData] = useState()
   const [dataStake, setDataStake] = useState()
   const { principal } = useConnect()
+  const alert = useAlert()
 
   const [staking, { loadingStaking, errorStaking, canisterDefinition }] =
     useCanister("staking", {
@@ -78,6 +80,11 @@ function StakeToken() {
   useEffect(async () => {
     dataStake ? console.log(dataStake) : null
     // TODO: Handle error success response.
+    if (dataStake) {
+      dataStake.Ok
+        ? alert.success("Stake succesfully!")
+        : alert.error("Stake unsuccesfully!")
+    }
   }, [dataStake])
 
   return (
