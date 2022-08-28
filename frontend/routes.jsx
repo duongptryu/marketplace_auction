@@ -266,7 +266,7 @@ const routes = [
       },
       {
         name: "create nft products",
-        route: "product-n/create",
+        route: "product/create-nft",
         component: <CreateNftProduct />,
       },
       {
