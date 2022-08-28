@@ -74,6 +74,7 @@ import ProgressBars from "layouts/sections/elements/progress-bars"
 import Toggles from "layouts/sections/elements/toggles"
 import Typography from "layouts/sections/elements/typography"
 import Collections from "pages/Collections"
+import CreateNftProduct from "pages/FormPages/CreateNftProduct"
 
 const routes = [
   {
@@ -262,6 +263,11 @@ const routes = [
         name: "detail product pending",
         route: "/pages/detailProduct/ProductDetailPending/:id",
         component: <ProductDetailPending />,
+      },
+      {
+        name: "create nft products",
+        route: "product-n/create",
+        component: <CreateNftProduct />,
       },
       {
         name: "mint collections",

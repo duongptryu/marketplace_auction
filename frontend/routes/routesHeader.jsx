@@ -2,6 +2,7 @@ import React from "react"
 
 import CreateSeller from "pages/FormPages/CreateSeller"
 import CreateRealProduct from "pages/FormPages/CreateRealProduct"
+import CreateNFTProduct from "pages/FormPages/CreateNftProduct"
 
 const routesHeader = {
   isLogin: [
@@ -16,9 +17,18 @@ const routesHeader = {
     },
     {
       type: "internal",
-      route: "/product-r/create",
+      route: "/product/create-real",
       component: <CreateRealProduct />,
-      label: "New request",
+      label: "Add product",
+      color: "info",
+      isBtn: false,
+      connectBtn: false,
+    },
+    {
+      type: "internal",
+      route: "/product/create-nft",
+      component: <CreateNFTProduct />,
+      label: "Add NFT",
       color: "info",
       isBtn: false,
       connectBtn: false,
@@ -39,6 +49,15 @@ const routesHeader = {
       route: "/product-r/create",
       component: <CreateRealProduct />,
       label: "New request",
+      color: "info",
+      isBtn: false,
+      connectBtn: false,
+    },
+    {
+      type: "internal",
+      route: "/product/create-nft",
+      component: <CreateNFTProduct />,
+      label: "Add NFT",
       color: "info",
       isBtn: false,
       connectBtn: false,
