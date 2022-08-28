@@ -111,6 +111,20 @@ function CreateNftProduct() {
     }
   }
 
+  const onReInput = () => {
+    setValues({
+      s1: {
+        title: "",
+        description: "",
+        duration: 1,
+        startPrice: "",
+        stepBid: "",
+        currency: "none",
+      },
+    })
+    setProgress(defaultRoutes.createNftProduct)
+  }
+
   useEffect(() => {
     if (dataCreate) {
       setValues((currentValues) => {
@@ -134,7 +148,7 @@ function CreateNftProduct() {
     <BaseLayout
       breadcrumb={[
         { label: "Home", route: "/presentation" },
-        { label: "Create Nft Product" },
+        { label: "Create NFT Product" },
       ]}
       title=""
     >
@@ -158,11 +172,14 @@ function CreateNftProduct() {
         totalSteps={totalSteps}
         error={isError}
         errorMessage={errorMessage}
+        routeOk={"/presentation"}
+        onClickReinput={onReInput}
       />
       <SuccessStep
         values={values}
         totalSteps={totalSteps}
         success={isSuccess}
+        routeOk={"/presentation"}
       />
     </BaseLayout>
   )

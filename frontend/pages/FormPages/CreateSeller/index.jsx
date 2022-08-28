@@ -97,6 +97,21 @@ function CreateSeller() {
     }
   }
 
+  const onReInput = () => {
+    setValues({
+      s1: {
+        username: "",
+        email: "",
+        photo: {},
+        description: "",
+        twitter: "",
+        facebook: "",
+        instagram: "",
+      },
+    })
+    setProgress(defaultRoutes.createSeller)
+  }
+
   useEffect(() => {
     if (dataCreate) {
       console.log(dataCreate)
@@ -139,12 +154,14 @@ function CreateSeller() {
         totalSteps={totalSteps}
         error={isError}
         errorMessage={errorMessage}
+        routeOk={"/presentation"}
+        onClickReinput={onReInput}
       />
       <SuccessStep
         values={values}
         totalSteps={totalSteps}
         success={isSuccess}
-        onClickOke={""}
+        routeOk={"/presentation"}
       />
     </BaseLayout>
   )

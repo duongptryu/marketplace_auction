@@ -108,6 +108,20 @@ function CreateRealProduct() {
     }
   }
 
+  const onReInput = () => {
+    setValues({
+      s1: {
+        title: "",
+        description: "",
+        duration: 1,
+        startPrice: "",
+        stepBid: "",
+        currency: "none",
+      },
+    })
+    setProgress(defaultRoutes.createRealProduct)
+  }
+
   useEffect(() => {
     if (dataCreate) {
       setValues((currentValues) => {
@@ -155,11 +169,14 @@ function CreateRealProduct() {
         totalSteps={totalSteps}
         error={isError}
         errorMessage={errorMessage}
+        routeOk={"/presentaion-pending"}
+        onClickReinput={onReInput}
       />
       <SuccessStep
         values={values}
         totalSteps={totalSteps}
         success={isSuccess}
+        routeOk={"/presentaion-pending"}
       />
     </BaseLayout>
   )

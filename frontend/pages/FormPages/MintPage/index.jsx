@@ -78,6 +78,18 @@ function MintPage() {
       setErrorMessage("Server Error")
     }
   }
+
+  const onReInput = () => {
+    setValues({
+      s1: {
+        file: undefined,
+        name: "",
+        description: "",
+      },
+    })
+    setProgress(defaultRoutes.createSeller)
+  }
+
   useEffect(() => {
     if (dataMint) {
       setValues((currentValues) => {
@@ -115,12 +127,19 @@ function MintPage() {
         setDataAction={setDataMint}
       />
       <ProcessingStep values={values} totalSteps={totalSteps} />
-      <ErrorStep values={values} totalSteps={totalSteps} error={isError} />
+      <ErrorStep
+        values={values}
+        totalSteps={totalSteps}
+        error={isError}
+        errorMessage={errorMessage}
+        routeOk={"/collection"}
+        onClickReinput={onReInput}
+      />
       <SuccessStep
         values={values}
         totalSteps={totalSteps}
         success={isSuccess}
-        onClickOke={""}
+        routeOk={"/collection"}
       />
     </BaseLayout>
   )

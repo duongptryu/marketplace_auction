@@ -20,8 +20,16 @@ import ReportIcon from "@mui/icons-material/Report"
 
 // Import Image
 import defaultAvatar from "assets/images/default-avatar.png"
+import { Link } from "react-router-dom"
 
-function ErrorStep({ values, totalSteps, error, errorMessage }) {
+function ErrorStep({
+  values,
+  totalSteps,
+  error,
+  errorMessage,
+  onClickReinput,
+  routeOk,
+}) {
   return Object.keys(values).length === totalSteps && error ? (
     <MKBox
       component="section"
@@ -41,14 +49,21 @@ function ErrorStep({ values, totalSteps, error, errorMessage }) {
         </MKTypography>
         <Grid container justifyContent="center" mt={4}>
           <Grid item xs={3} mx={2}>
-            <MKButton variant="gradient" color="light" fullWidth>
+            <MKButton
+              variant="gradient"
+              color="light"
+              fullWidth
+              onClick={(e) => onClickReinput()}
+            >
               Reinput
             </MKButton>
           </Grid>
           <Grid item xs={3} mx={2}>
-            <MKButton variant="gradient" color="dark" fullWidth>
-              OK
-            </MKButton>
+            <MKBox component={Link} to={routeOk}>
+              <MKButton variant="gradient" color="dark" fullWidth>
+                OK
+              </MKButton>
+            </MKBox>
           </Grid>
         </Grid>
       </Container>

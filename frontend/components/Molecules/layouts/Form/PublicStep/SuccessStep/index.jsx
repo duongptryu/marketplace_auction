@@ -20,8 +20,9 @@ import DoneAllIcon from "@mui/icons-material/DoneAll"
 
 // Import Image
 import defaultAvatar from "assets/images/default-avatar.png"
+import { Link } from "react-router-dom"
 
-function SuccessStep({ values, totalSteps, success }) {
+function SuccessStep({ values, totalSteps, success, routeOk }) {
   return Object.keys(values).length === totalSteps && success ? (
     <MKBox
       component="section"
@@ -38,9 +39,11 @@ function SuccessStep({ values, totalSteps, success }) {
         </MKTypography>
         <Grid container justifyContent="center" mt={4}>
           <Grid item xs={3} mx={2}>
-            <MKButton variant="gradient" color="dark" fullWidth>
-              OK
-            </MKButton>
+            <MKBox component={Link} to={routeOk}>
+              <MKButton variant="gradient" color="dark" fullWidth>
+                OK
+              </MKButton>
+            </MKBox>
           </Grid>
         </Grid>
       </Container>
