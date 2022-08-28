@@ -30,59 +30,21 @@ function Transfer() {
     const [product, setProduct] = React.useState(undefined);
     const [listBids, setlistBids] = React.useState(undefined);
     const [wallet] = useWallet()
-    const [assets] = useBalance()
-    const [inputNumToken, setInputNumToken] = React.useState('');
+    const [inputWalletClient, setInputWalletClient] = React.useState('');
+    const [inputWalletUser, setInputWalletUser] = React.useState('');
     const params = useParams();
     const stateMarket = canisterDefinition.canisterId;
     console.log('stateMarket', stateMarket)
     // handle Bid
-    const handleChangeInputBid = event => {
-        setInputNumToken(event.target.value);
+    const handleChangeInputWalletClient = event => {
+        setInputWalletClient(event.target.value);
 
-        console.log('value is:', event.target.value);
+        console.log('value setInputWalletClient is:', event.target.value);
     };
-    // get the product
-    const getProduct = async () => {
-        try {
-            const datas = await marketplace_auction.GetAuction(parseInt(params.id));
-            // lay ngay den date Line
-            const a = replaceNumber(datas.Ok.product.startTime) + replaceNumber(datas.Ok.product.auctionTime);
-            const strTime = parseInt(datas.Ok.product.startTime) / Math.pow(10, 6)
-            const dateLine = moment(a / 1000000);
-            datas.Ok.product.dateLine = dateLine.format("DD MMM YYYY hh:mm a");
-            const currentTime = moment();
-            // datas.Ok.product.startTime = ;
-            const curTime = new Date().getTime()
-            const durTime = parseInt(datas.Ok.product.auctionTime) / Math.pow(10, 6)
-            const r = (curTime - strTime) / durTime
+    const handleChangeWalletUser = event => {
+        setInputWalletUser(event.target.value);
 
-            if (parseInt(dateLine.diff(currentTime, 'seconds')) > 0) {
-                datas.Ok.product.processToBid = parseInt(dateLine.diff(currentTime, 'seconds')) + ' seconds';
-            } else {
-                datas.Ok.product.processToBid = 'Out of time';
-            }
-
-            if (dateLine > currentTime) {
-                datas.Ok.product.processBar = parseInt(r * 100)
-            } else {
-                datas.Ok.product.processBar = 100
-            }
-            setProduct(datas);
-            getHistoryBid()
-        }
-        catch (e) {
-            console.log('message error', e)
-        }
-
-    };
-
-    const getHistoryBid = async () => {
-        const datas = await marketplace_auction.GetBids(parseInt(params.id));
-        console.log('datas Bids', datas);
-        setlistBids(datas)
-    };
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
+        console.log('value setInputWalletUser is:', event.target.value);
     };
 
     const videoTag = {
@@ -120,15 +82,6 @@ function Transfer() {
         }
     }
 
-    const onConnectPlug = async () => {
-        try {
-            const publicKey = await window.ic.plug.requestConnect();
-            console.log(`The connected user's public key is:`, publicKey);
-
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     const getAmount = (amountt, unitt) => {
         let amountToken = ' 0';
@@ -159,10 +112,9 @@ function Transfer() {
 
     }
 
-    React.useEffect(() => {
-        getProduct()
-        getHistoryBid()
-    }, [wallet]);
+    // React.useEffect(() => {
+
+    // }, []);
     return (
         <BaseLayout
             breadcrumb={[
@@ -174,10 +126,27 @@ function Transfer() {
             <video style={videoTag} autoPlay loop muted>
                 <source src={bgVideo} type='video/mp4' />
             </video>
-            <MKBox pt={5} pb={6}>
-                <Container style={{ "backgroundColor": "#ffffffd9", "boxShadow": "0rem 0.625rem 0.9375rem -0.1875rem rgb(0 0 0 / 10%), 0rem 0.25rem 0.375rem -0.125rem rgb(0 0 0 / 5%)" }}>
-                    <Grid container>
-                        <Box sx={{ minWidth: 120 }}>
+            <MKBox pt={5} pb={6} minHeight="75vh"
+                width="100%"
+                py={3}
+                sx={{
+                    backgroundSize: "cover",
+                    backgroundPosition: "top",
+                    display: "grid",
+                    placeItems: "center",
+                    justifyContent: "center",
+
+                }}>
+                <Container style={{ "backgroundColor": "#ffffffd9", "boxShadow": "0rem 0.625rem 0.9375rem -0.1875rem rgb(0 0 0 / 10%), 0rem 0.25rem 0.375rem -0.125rem rgb(0 0 0 / 5%)", "padding": "20px" }}>
+                    <Grid container textAlign={'center'}>
+                        <Box sx={{
+                            minWidth: 420,
+                            backgroundSize: "cover",
+                            backgroundPosition: "top",
+                            display: "grid",
+                            placeItems: "center",
+                        }}>
+                            <MKTypography>Transfer</MKTypography>
                             <FormControl fullWidth>
                                 <InputLabel variant="standard" htmlFor="uncontrolled-native">
                                     Your Collections
@@ -189,10 +158,18 @@ function Transfer() {
                                         id: 'uncontrolled-native',
                                     }}
                                 >
+
                                     <option value={10}>Ten</option>
                                     <option value={20}>Twenty</option>
                                     <option value={30}>Thirty</option>
                                 </NativeSelect>
+                                <br></br>
+                                <MKInput label="Your wallet" value={inputWalletUser} onChange={handleChangeWalletUser} fullWidth></MKInput>
+                                <br></br>
+
+                                <MKInput label="Wallet recevie" value={inputWalletClient} onChange={handleChangeInputWalletClient} fullWidth></MKInput>
+                                <br></br>                                <br></br>
+                                <MKButton variant="gradient" color="info" size="large">Transfer </MKButton>
                             </FormControl>
                         </Box>
                     </Grid>
