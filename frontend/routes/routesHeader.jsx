@@ -76,10 +76,14 @@ const routesHeader = {
     {
       label: "All products",
       color: "secondary",
+      route: "/presentation",
+      component: <></>,
     },
     {
       label: "Pending products",
       color: "secondary",
+      route: "/presentation-pending",
+      component: <></>,
     },
   ],
 }

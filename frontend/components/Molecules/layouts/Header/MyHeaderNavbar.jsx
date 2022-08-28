@@ -191,7 +191,7 @@ function MyHeaderNavbar({
       )
     },
   )
-  const renderNavbarSubItem = subActions.map(({ label, color }) => (
+  const renderNavbarSubItem = subActions.map(({ label, color, route }) => (
     <MKBox
       key={label}
       mx={1}
@@ -202,6 +202,8 @@ function MyHeaderNavbar({
       color={light ? "white" : "dark"}
       opacity={light ? 1 : 0.6}
       sx={{ cursor: "pointer", userSelect: "none" }}
+      component={Link}
+      to={route}
     >
       <MKTypography
         key={label + "child"}
