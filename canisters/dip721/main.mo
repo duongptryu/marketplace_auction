@@ -122,8 +122,8 @@ shared(msg) actor class Dip721 () = Self {
         return _isApprovedForAll(owner, to);
     };
 
-    public shared(msg) func transfer(tokenId: TokenId, to: Principal): async Types.TxReceipt {
-       _transfer(msg.caller, to, tokenId);
+    public shared(msg) func transfer(caller: Principal, tokenId: TokenId, to: Principal): async Types.TxReceipt {
+       _transfer(caller, to, tokenId);
        return #Ok(true);
     };
 

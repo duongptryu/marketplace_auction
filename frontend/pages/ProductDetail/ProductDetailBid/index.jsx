@@ -157,7 +157,7 @@ function ProductDetailBid() {
         const res = await dip20.approve(Principal.fromText(principal), Principal.fromText(stateMarket), BigInt(inputNumToken))
         console.log('mum', res);
         const biding = await marketplace_auction.BidAuction(Principal.fromText(principal), {
-          auctionId: 2,
+          auctionId: BigInt(product.Ok.product.id),
           amount: BigInt(inputNumToken),
         })
         console.log('biding', biding);
@@ -192,7 +192,7 @@ function ProductDetailBid() {
       try {
         console.log('-->', typeof (principal), Principal.fromText(principal), BigInt(product.Ok.product.id))
 
-        const res = await marketplace_auction.ClaimNft(Principal.fromText(principal), BigInt(3))
+        const res = await marketplace_auction.ClaimNft(Principal.fromText(principal), BigInt(product.Ok.product.id))
         console.log('res--<>', res)
       }
       catch (e) {

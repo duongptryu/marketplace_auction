@@ -29,7 +29,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 	private stable var auctionPendingIdCount: Nat = 0;
     private stable var bitIdCount: Nat = 0;
     private stable var fee = 10;
-	private stable var timePending = 8600000000000;
+	private stable var timePending = 180000000000;
 
     private stable var supportedPaymentStore: [(Principal, Types.SupportPaymentResp)] = [];
     private stable var auctionStore: [(Nat, Types.Auction)] = [];
@@ -418,8 +418,6 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 			};
 			case (?auction) {
 				if (auction.auctionTime + auction.startTime < Time.now()) {
-					Debug.print(debug_show(auction.auctionTime + auction.startTime));
-					Debug.print(debug_show(Time.now()));
 					return #Err(#TimeBidIsExpired);
 				};
 				if (auction.highestBidId > 0) {
@@ -504,7 +502,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				if (auction.typeAuction != "NFT") {
 					return #Err(#CannotClaimRealProduct);
 				};
-				if (auction.auctionTime + auction.startTime > Time.now()) {
+				if (auction.auctionTime + auction.startTime < Time.now()) {
 					return #Err(#TimeAuctionNotEnd);
 				};
 				if (not Principal.isAnonymous(auction.winner)) {
@@ -708,7 +706,7 @@ shared(msg) actor class Dacution(dip20: Principal, dip721: Principal, staking: P
 				return #Err(#AuctionPendingNotExist);
 			};
 			case (?auctionPendingData){
-				if (auctionPendingData.timeStart + auctionPendingData.timePending > Time.now()) {
+				if (auctionPendingData.timeStart + auctionPendingData.timePending < Time.now()) {
 					return #Err(#TimeVoteIsExpired);
 				};
 				if (Option.isSome(_unwrap(auctionPendingToVotes.get(auctionPendingId)).get(caller))) {

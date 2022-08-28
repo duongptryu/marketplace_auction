@@ -239,7 +239,8 @@ shared({caller}) actor class Dip20Token() = Self {
 		return #Ok(txid);
 	};
 	
-	public shared(msg) func mint(to: Principal, amount: Nat): async TxReceipt {
+	public shared(msg) func mint(to: Principal, _amount: Nat64): async TxReceipt {
+		let amount = Nat64.toNat(_amount);
 		if(msg.caller != owner_) {
 			return #Err(#Unauthorized);
 		};
